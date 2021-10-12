@@ -665,25 +665,42 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
 
     private void cmbYearItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbYearItemStateChanged
         dayModel();
-        int month_bday = cmbMonth.getSelectedIndex();
-        int day_bday = cmbDay.getSelectedIndex() + 1;
-        int year_bday = Integer.parseInt(cmbYear.getSelectedItem().toString());
-        computeAge(month_bday, day_bday, year_bday);
     }//GEN-LAST:event_cmbYearItemStateChanged
 
     private void cmbMonthItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbMonthItemStateChanged
         dayModel();
-        int month_bday = cmbMonth.getSelectedIndex();
-        int day_bday = cmbDay.getSelectedIndex() + 1;
-        int year_bday = Integer.parseInt(cmbYear.getSelectedItem().toString());
-        computeAge(month_bday, day_bday, year_bday);
     }//GEN-LAST:event_cmbMonthItemStateChanged
 
     private void cmbDayItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbDayItemStateChanged
         int month_bday = cmbMonth.getSelectedIndex();
         int day_bday = cmbDay.getSelectedIndex() + 1;
         int year_bday = Integer.parseInt(cmbYear.getSelectedItem().toString());
-        computeAge(month_bday, day_bday, year_bday);
+        
+        System.out.println(month_bday + "\n" + day_bday + "\n" + year_bday);
+        
+        cal = new GregorianCalendar();
+        int computeDifference = 0;
+        
+        int month = cal.get(Calendar.MONTH);
+        int year = cal.get(Calendar.YEAR);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        
+        if (month_bday < month) {
+            computeDifference = year - year_bday;
+        } else if (month_bday == month) {
+            if (day_bday <= day) {
+                computeDifference = year - year_bday;
+            } else {
+                computeDifference = (year - 1) - year_bday;
+            }
+        } else {
+            computeDifference = (year - 1) - year_bday;
+        }
+        
+        if(computeDifference < 18){
+            JOptionPane.showMessageDialog(null, "Must be 18 years old and above to be eligible to register.", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+        txtAge.setText(computeDifference + "");
     }//GEN-LAST:event_cmbDayItemStateChanged
 
     private void txtConfirmPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtConfirmPasswordActionPerformed
@@ -755,7 +772,6 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         
         if(computeDifference < 18){
             JOptionPane.showMessageDialog(null, "Must be 18 years old and above to be eligible to register.", "ERROR", JOptionPane.ERROR_MESSAGE);
-            return;
         }
         txtAge.setText(computeDifference + "");
     }
