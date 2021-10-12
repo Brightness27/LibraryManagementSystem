@@ -1,4 +1,5 @@
 
+import java.awt.event.ItemEvent;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.JFrame;
@@ -672,12 +673,11 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_cmbMonthItemStateChanged
 
     private void cmbDayItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbDayItemStateChanged
-        int month_bday = cmbMonth.getSelectedIndex();
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            int month_bday = cmbMonth.getSelectedIndex();
         int day_bday = cmbDay.getSelectedIndex() + 1;
         int year_bday = Integer.parseInt(cmbYear.getSelectedItem().toString());
-        
-        System.out.println(month_bday + "\n" + day_bday + "\n" + year_bday);
-        
+       
         cal = new GregorianCalendar();
         int computeDifference = 0;
         
@@ -701,6 +701,8 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Must be 18 years old and above to be eligible to register.", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
         txtAge.setText(computeDifference + "");
+        }
+        
     }//GEN-LAST:event_cmbDayItemStateChanged
 
     private void txtConfirmPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtConfirmPasswordActionPerformed
