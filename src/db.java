@@ -59,12 +59,57 @@ public class db {
                 + " `Availability` VARCHAR(30) NOT NULL DEFAULT 'Available' ,"
                 + " PRIMARY KEY (`BookID`)) ENGINE = InnoDB;";
 
+        String transactionSql = "CREATE TABLE IF NOT EXISTS `bookprocessing` (\n"
+                + "  `Transaction_No.` int(11) NOT NULL AUTO_INCREMENT,\n"
+                + "  `userid` int(11) NOT NULL,\n"
+                + "  `BookID` int(11) NOT NULL,\n"
+                + "  `Date_Borrowed` varchar(20) NOT NULL DEFAULT '--',\n"
+                + "  `Date_Returned` varchar(20) NOT NULL DEFAULT '--',\n"
+                + "  `Status` varchar(10) NOT NULL,\n"
+                + "  PRIMARY KEY (`Transaction_No.`),\n"
+                + "  KEY `BookID` (`BookID`) USING BTREE,\n"
+                + "  KEY `userid` (`userid`),\n"
+                + "  CONSTRAINT `bookprocessing_ibfk_1` FOREIGN KEY (`BookID`) REFERENCES `books` (`BookID`) ,\n"
+                + "  CONSTRAINT `bookprocessing_ibfk_2` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`)\n"
+                + ") ENGINE=InnoDB ";
+
+        String notificationSql = "CREATE TABLE IF NOT EXISTS `notifications` (\n"
+                + "  `NotificationID` int(11) NOT NULL AUTO_INCREMENT,\n"
+                + "  `userid` int(11) NOT NULL,\n"
+                + "  `bookID` int(11) NOT NULL,\n"
+                + "  `Message` varchar(500) NOT NULL,\n"
+                + "  `Date` date NOT NULL,\n"
+                + "  `Status` varchar(6) NOT NULL DEFAULT 'UNREAD',\n"
+                + "  PRIMARY KEY (`NotificationID`),\n"
+                + "  KEY `userid` (`userid`),\n"
+                + "  KEY `bookID` (`bookID`),\n"
+                + "  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`),\n"
+                + "  CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`bookID`) REFERENCES `books` (`BookID`)\n"
+                + ") ENGINE=InnoDB";
+
         try {
             con = getConnection();
             Statement s = con.createStatement();
             s.executeUpdate(usersSql);
             s.executeUpdate(booksSql);
+            s.executeUpdate(transactionSql);
+            s.executeUpdate(notificationSql);
             
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void showQueries(){
+        String showQuery = "SHOW CREATE TABLE notifications";
+        try {
+            con = getConnection();
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery(showQuery);
+            rs.next();
+            
+            System.out.println(rs.getString("Create Table"));
             con.close();
         } catch (Exception e) {
             e.printStackTrace();
