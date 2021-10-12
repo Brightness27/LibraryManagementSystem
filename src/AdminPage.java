@@ -147,11 +147,6 @@ public class AdminPage extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        pnlMembers = new javax.swing.JPanel();
-        jLabel23 = new javax.swing.JLabel();
-        txtsearchMember = new javax.swing.JTextField();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        tblMembers = new javax.swing.JTable();
         pnlBookRequests = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -171,6 +166,11 @@ public class AdminPage extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblBookRequests = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
+        pnlMembers = new javax.swing.JPanel();
+        jLabel23 = new javax.swing.JLabel();
+        txtsearchMember = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblMembers = new javax.swing.JTable();
         pnlBorrowHistory = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblBorrowedHistory = new javax.swing.JTable();
@@ -225,52 +225,6 @@ public class AdminPage extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(138, 102, 63));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        pnlMembers.setBackground(new java.awt.Color(226, 200, 171));
-        pnlMembers.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnlMembers.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel23.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel23.setText("Search: ");
-        pnlMembers.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 120, 40));
-
-        txtsearchMember.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        pnlMembers.add(txtsearchMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 20, 330, 40));
-
-        jScrollPane4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        tblMembers.setBackground(new java.awt.Color(226, 200, 171));
-        tblMembers.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        tblMembers.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "First Name", "Last Name", "User Type", "Status"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblMembers.setRowHeight(30);
-        tblMembers.setSelectionBackground(new java.awt.Color(247, 234, 212));
-        tblMembers.setSelectionForeground(new java.awt.Color(0, 0, 0));
-        tblMembers.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblMembersMouseClicked(evt);
-            }
-        });
-        jScrollPane4.setViewportView(tblMembers);
-
-        pnlMembers.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 1080, 460));
-
-        jPanel1.add(pnlMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
-
         pnlBookRequests.setBackground(new java.awt.Color(226, 200, 171));
         pnlBookRequests.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pnlBookRequests.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -284,6 +238,7 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel4.setText(" Book Request");
         jPanel4.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 320, 40));
 
+        txtBookTitle.setEditable(false);
         txtBookTitle.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         txtBookTitle.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtBookTitle.setBorder(null);
@@ -294,6 +249,7 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel8.setText("Book Title");
         jPanel4.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 320, 40));
 
+        txtAuthor.setEditable(false);
         txtAuthor.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         txtAuthor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtAuthor.setBorder(null);
@@ -337,6 +293,7 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel12.setText("Borrower");
         jPanel4.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 320, 40));
 
+        txtBorrower.setEditable(false);
         txtBorrower.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         txtBorrower.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtBorrower.setBorder(null);
@@ -407,6 +364,52 @@ public class AdminPage extends javax.swing.JFrame {
         pnlBookRequests.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 20, 740, 60));
 
         jPanel1.add(pnlBookRequests, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
+
+        pnlMembers.setBackground(new java.awt.Color(226, 200, 171));
+        pnlMembers.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pnlMembers.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel23.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel23.setText("Search: ");
+        pnlMembers.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 120, 40));
+
+        txtsearchMember.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        pnlMembers.add(txtsearchMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 20, 330, 40));
+
+        jScrollPane4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        tblMembers.setBackground(new java.awt.Color(226, 200, 171));
+        tblMembers.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        tblMembers.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "First Name", "Last Name", "User Type", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblMembers.setRowHeight(30);
+        tblMembers.setSelectionBackground(new java.awt.Color(247, 234, 212));
+        tblMembers.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        tblMembers.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblMembersMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(tblMembers);
+
+        pnlMembers.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 1080, 460));
+
+        jPanel1.add(pnlMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
         pnlBorrowHistory.setBackground(new java.awt.Color(226, 200, 171));
         pnlBorrowHistory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
