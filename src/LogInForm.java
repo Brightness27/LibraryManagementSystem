@@ -27,7 +27,6 @@ public class LogInForm extends javax.swing.JFrame {
     public LogInForm() {
         initComponents();
         db.createTable();
-        db.showQueries();
         changeIcon();
         txtusername.setBackground(new java.awt.Color(0,0,0,1));
         txtpassword.setBackground(new java.awt.Color(0,0,0,1));

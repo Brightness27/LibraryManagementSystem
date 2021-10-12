@@ -101,18 +101,18 @@ public class db {
         }
     }
     
-    public static void showQueries(){
-        String showQuery = "SHOW CREATE TABLE notifications";
-        try {
-            con = getConnection();
-            Statement s = con.createStatement();
-            ResultSet rs = s.executeQuery(showQuery);
-            rs.next();
-            
-            System.out.println(rs.getString("Create Table"));
-            con.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void showQueries(){
+//        String showQuery = "SHOW CREATE TABLE notifications";
+//        try {
+//            con = getConnection();
+//            Statement s = con.createStatement();
+//            ResultSet rs = s.executeQuery(showQuery);
+//            rs.next();
+//            
+//            System.out.println(rs.getString("Create Table"));
+//            con.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
