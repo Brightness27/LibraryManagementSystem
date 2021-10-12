@@ -201,7 +201,6 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         bgUsertype = new javax.swing.JLabel();
         txtbday = new javax.swing.JTextField();
         bgBday = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         lblPanelTitle = new javax.swing.JLabel();
 
@@ -509,10 +508,6 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         bgBday.setText("jLabel17");
         jPanel2.add(bgBday, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 300, 200, 50));
 
-        jButton1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jButton1.setText("Activate");
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 20, 180, 50));
-
         add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1120, 480));
 
         jPanel3.setBackground(new java.awt.Color(138, 102, 63));
@@ -776,7 +771,6 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> cmbMonth;
     private javax.swing.JComboBox<String> cmbSex;
     private javax.swing.JComboBox<String> cmbYear;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
