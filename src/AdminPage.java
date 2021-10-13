@@ -4,8 +4,11 @@ import java.awt.Toolkit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableRowSorter;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -105,6 +108,13 @@ public class AdminPage extends javax.swing.JFrame {
         }
     }
     
+    public void filterTable(JTable table, String query){
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(model);
+		table.setRowSorter(tr);
+		tr.setRowFilter(RowFilter.regexFilter(query));
+	}
+    
     private void setCurrentDate(){
         cal = new GregorianCalendar();
         String year = cal.get(Calendar.YEAR)+ "";
@@ -147,6 +157,19 @@ public class AdminPage extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        pnlMembers = new javax.swing.JPanel();
+        jLabel23 = new javax.swing.JLabel();
+        txtsearchMember = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblMembers = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
+        pnlBookList = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblBookList = new javax.swing.JTable();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtSearchtblBookList = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         pnlBookRequests = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -166,11 +189,6 @@ public class AdminPage extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblBookRequests = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
-        pnlMembers = new javax.swing.JPanel();
-        jLabel23 = new javax.swing.JLabel();
-        txtsearchMember = new javax.swing.JTextField();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        tblMembers = new javax.swing.JTable();
         pnlBorrowHistory = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblBorrowedHistory = new javax.swing.JTable();
@@ -201,12 +219,6 @@ public class AdminPage extends javax.swing.JFrame {
         pnlNotification = new javax.swing.JLabel();
         pnlMessages = new javax.swing.JLabel();
         pnlPersonalInfo = new javax.swing.JLabel();
-        pnlBookList = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblBookList = new javax.swing.JTable();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        txtSearchtblBookList = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         lblBorrowHistory = new javax.swing.JLabel();
         lblBookList = new javax.swing.JLabel();
@@ -224,6 +236,121 @@ public class AdminPage extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(138, 102, 63));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        pnlMembers.setBackground(new java.awt.Color(226, 200, 171));
+        pnlMembers.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pnlMembers.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel23.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel23.setText("Search: ");
+        pnlMembers.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 120, 40));
+
+        txtsearchMember.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        txtsearchMember.setBorder(null);
+        txtsearchMember.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtsearchMemberKeyReleased(evt);
+            }
+        });
+        pnlMembers.add(txtsearchMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 28, 390, 30));
+
+        jScrollPane4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        tblMembers.setBackground(new java.awt.Color(226, 200, 171));
+        tblMembers.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        tblMembers.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "First Name", "Last Name", "User Type", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblMembers.setRowHeight(30);
+        tblMembers.setSelectionBackground(new java.awt.Color(247, 234, 212));
+        tblMembers.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        tblMembers.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblMembersMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(tblMembers);
+
+        pnlMembers.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 1080, 460));
+
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search-field.png"))); // NOI18N
+        jLabel7.setText("jLabel2");
+        pnlMembers.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 20, 435, 45));
+
+        jPanel1.add(pnlMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
+
+        pnlBookList.setBackground(new java.awt.Color(226, 200, 171));
+        pnlBookList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pnlBookList.setFocusable(false);
+        pnlBookList.setRequestFocusEnabled(false);
+        pnlBookList.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        tblBookList.setBackground(new java.awt.Color(226, 200, 171));
+        tblBookList.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        tblBookList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Book ID", "Category", "Book Title", "Author", "Availability"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblBookList.setRowHeight(30);
+        tblBookList.setSelectionBackground(new java.awt.Color(247, 234, 212));
+        tblBookList.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        tblBookList.getTableHeader().setResizingAllowed(false);
+        tblBookList.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tblBookList);
+
+        pnlBookList.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 1100, 470));
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel5.setText("Search Book:");
+        pnlBookList.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 140, 40));
+
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel6.setText("(Book TItle/Author/Category)");
+        pnlBookList.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 190, -1));
+
+        txtSearchtblBookList.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        txtSearchtblBookList.setBorder(null);
+        txtSearchtblBookList.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchtblBookListKeyReleased(evt);
+            }
+        });
+        pnlBookList.add(txtSearchtblBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 18, 390, 30));
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search-field.png"))); // NOI18N
+        jLabel2.setText("jLabel2");
+        pnlBookList.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 10, 435, 45));
+
+        jPanel1.add(pnlBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
         pnlBookRequests.setBackground(new java.awt.Color(226, 200, 171));
         pnlBookRequests.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -364,52 +491,6 @@ public class AdminPage extends javax.swing.JFrame {
         pnlBookRequests.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 20, 740, 60));
 
         jPanel1.add(pnlBookRequests, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
-
-        pnlMembers.setBackground(new java.awt.Color(226, 200, 171));
-        pnlMembers.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnlMembers.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel23.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel23.setText("Search: ");
-        pnlMembers.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 120, 40));
-
-        txtsearchMember.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        pnlMembers.add(txtsearchMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 20, 330, 40));
-
-        jScrollPane4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        tblMembers.setBackground(new java.awt.Color(226, 200, 171));
-        tblMembers.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        tblMembers.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "First Name", "Last Name", "User Type", "Status"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblMembers.setRowHeight(30);
-        tblMembers.setSelectionBackground(new java.awt.Color(247, 234, 212));
-        tblMembers.setSelectionForeground(new java.awt.Color(0, 0, 0));
-        tblMembers.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblMembersMouseClicked(evt);
-            }
-        });
-        jScrollPane4.setViewportView(tblMembers);
-
-        pnlMembers.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 1080, 460));
-
-        jPanel1.add(pnlMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
         pnlBorrowHistory.setBackground(new java.awt.Color(226, 200, 171));
         pnlBorrowHistory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -572,6 +653,9 @@ public class AdminPage extends javax.swing.JFrame {
         lblNotifiactions.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/notification1.png"))); // NOI18N
         lblNotifiactions.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblNotifiactions.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblNotifiactionsMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 lblNotifiactionsMouseEntered(evt);
             }
@@ -623,55 +707,6 @@ public class AdminPage extends javax.swing.JFrame {
 
         pnlPersonalInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/panel-icons.png"))); // NOI18N
         jPanel1.add(pnlPersonalInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 20, -1, -1));
-
-        pnlBookList.setBackground(new java.awt.Color(226, 200, 171));
-        pnlBookList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnlBookList.setFocusable(false);
-        pnlBookList.setRequestFocusEnabled(false);
-        pnlBookList.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        tblBookList.setBackground(new java.awt.Color(226, 200, 171));
-        tblBookList.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        tblBookList.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Book ID", "Category", "Book Title", "Author", "Availability"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblBookList.setRowHeight(30);
-        tblBookList.setSelectionBackground(new java.awt.Color(247, 234, 212));
-        tblBookList.setSelectionForeground(new java.awt.Color(0, 0, 0));
-        tblBookList.getTableHeader().setResizingAllowed(false);
-        tblBookList.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(tblBookList);
-
-        pnlBookList.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 1100, 470));
-
-        jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel5.setText("Search Book:");
-        pnlBookList.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 140, 40));
-
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel6.setText("(Book TItle/Author/Category)");
-        pnlBookList.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 190, -1));
-
-        txtSearchtblBookList.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        pnlBookList.add(txtSearchtblBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, 430, 40));
-
-        jPanel1.add(pnlBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
         jPanel3.setBackground(new java.awt.Color(226, 200, 171));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -1150,6 +1185,22 @@ public class AdminPage extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tblMembersMouseClicked
 
+    private void txtSearchtblBookListKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchtblBookListKeyReleased
+        String query = txtSearchtblBookList.getText();
+        
+        filterTable(tblBookList, query);
+    }//GEN-LAST:event_txtSearchtblBookListKeyReleased
+
+    private void txtsearchMemberKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsearchMemberKeyReleased
+        String query = txtsearchMember.getText();
+        
+        filterTable(tblMembers, query);
+    }//GEN-LAST:event_txtsearchMemberKeyReleased
+
+    private void lblNotifiactionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotifiactionsMouseClicked
+        
+    }//GEN-LAST:event_lblNotifiactionsMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -1200,6 +1251,7 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
@@ -1208,6 +1260,7 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
