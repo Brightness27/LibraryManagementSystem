@@ -29,10 +29,18 @@ public class UserPage extends javax.swing.JFrame {
     Calendar cal;
     String date;
     String transactID;
+    PopupPanel popNotif;
+    PopupPanel popMessage;
     
     SqlQueries queries = new SqlQueries();
     public UserPage() {
         initComponents();
+        hidePanels();
+        changeIcon();
+        showBooks();
+        showBorrowedBooks();
+        setTableColumnSize();
+        setCurrentDate();
     }
     
     UserPage(int id, String fname, String lname) {
@@ -40,6 +48,8 @@ public class UserPage extends javax.swing.JFrame {
         this.lname = lname;
         this.id = id;
         initComponents();
+        popNotif = new PopupPanel(this, 1160, "Notifications", id);
+        popMessage = new PopupPanel(this, 1080, "Messages", id);
         hidePanels();
         changeIcon();
         showBooks();
@@ -58,6 +68,7 @@ public class UserPage extends javax.swing.JFrame {
         pnlBookList.setVisible(false);
         pnlBorrowBooks.setVisible(false);
         pnlBorrowHistory.setVisible(false);
+        pnlMessage.setVisible(false);
     }
     
     private void showBooks(){
@@ -133,15 +144,9 @@ public class UserPage extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jPanel1 = new javax.swing.JPanel();
-        pnlBookList = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblBookList = new javax.swing.JTable();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        txtSearchtblBookList = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
         pnlBorrowBooks = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         lblTitleRequest = new javax.swing.JLabel();
@@ -159,10 +164,22 @@ public class UserPage extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblBorrowedBooks = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
+        pnlMessage = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        txtAreaMessage = new javax.swing.JTextArea();
+        btnSend = new javax.swing.JButton();
         pnlBorrowHistory = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblBorrowedHistory = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
+        pnlBookList = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblBookList = new javax.swing.JTable();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtSearchtblBookList = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
         logo = new javax.swing.JLabel();
         lblWelcome = new javax.swing.JLabel();
         lblLogout = new javax.swing.JLabel();
@@ -187,71 +204,6 @@ public class UserPage extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(138, 102, 63));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        pnlBookList.setBackground(new java.awt.Color(226, 200, 171));
-        pnlBookList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnlBookList.setFocusable(false);
-        pnlBookList.setRequestFocusEnabled(false);
-        pnlBookList.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jScrollPane1.setBackground(new java.awt.Color(226, 200, 171));
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        tblBookList.setBackground(new java.awt.Color(226, 200, 171));
-        tblBookList.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        tblBookList.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Book ID", "Category", "Book Title", "Author", "Availability"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblBookList.setRowHeight(30);
-        tblBookList.setSelectionBackground(new java.awt.Color(247, 234, 212));
-        tblBookList.setSelectionForeground(new java.awt.Color(0, 0, 0));
-        tblBookList.getTableHeader().setResizingAllowed(false);
-        tblBookList.getTableHeader().setReorderingAllowed(false);
-        tblBookList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblBookListMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(tblBookList);
-
-        pnlBookList.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 1100, 470));
-
-        jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel5.setText("Search Book:");
-        pnlBookList.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 140, 40));
-
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel6.setText("(Book TItle/Author/Category)");
-        pnlBookList.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 190, -1));
-
-        txtSearchtblBookList.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        txtSearchtblBookList.setBorder(null);
-        txtSearchtblBookList.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtSearchtblBookListKeyReleased(evt);
-            }
-        });
-        pnlBookList.add(txtSearchtblBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 15, 390, 30));
-
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search-field.png"))); // NOI18N
-        jLabel4.setText("jLabel2");
-        pnlBookList.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 10, 435, 40));
-
-        jPanel1.add(pnlBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
         pnlBorrowBooks.setBackground(new java.awt.Color(226, 200, 171));
         pnlBorrowBooks.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -374,6 +326,40 @@ public class UserPage extends javax.swing.JFrame {
 
         jPanel1.add(pnlBorrowBooks, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
+        pnlMessage.setBackground(new java.awt.Color(226, 200, 171));
+        pnlMessage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pnlMessage.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        txtAreaMessage.setColumns(5);
+        txtAreaMessage.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        txtAreaMessage.setRows(5);
+        txtAreaMessage.setTabSize(1);
+        txtAreaMessage.setWrapStyleWord(true);
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jScrollPane4, org.jdesktop.beansbinding.ELProperty.create("true"), txtAreaMessage, org.jdesktop.beansbinding.BeanProperty.create("lineWrap"));
+        bindingGroup.addBinding(binding);
+
+        jScrollPane4.setViewportView(txtAreaMessage);
+
+        jPanel2.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 90));
+
+        pnlMessage.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 450, 940, 90));
+
+        btnSend.setText("Send");
+        btnSend.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendActionPerformed(evt);
+            }
+        });
+        pnlMessage.add(btnSend, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 450, 110, 80));
+
+        jPanel1.add(pnlMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
+
         pnlBorrowHistory.setBackground(new java.awt.Color(226, 200, 171));
         pnlBorrowHistory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pnlBorrowHistory.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -412,6 +398,71 @@ public class UserPage extends javax.swing.JFrame {
 
         jPanel1.add(pnlBorrowHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
+        pnlBookList.setBackground(new java.awt.Color(226, 200, 171));
+        pnlBookList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pnlBookList.setFocusable(false);
+        pnlBookList.setRequestFocusEnabled(false);
+        pnlBookList.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jScrollPane1.setBackground(new java.awt.Color(226, 200, 171));
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        tblBookList.setBackground(new java.awt.Color(226, 200, 171));
+        tblBookList.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        tblBookList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Book ID", "Category", "Book Title", "Author", "Availability"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblBookList.setRowHeight(30);
+        tblBookList.setSelectionBackground(new java.awt.Color(247, 234, 212));
+        tblBookList.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        tblBookList.getTableHeader().setResizingAllowed(false);
+        tblBookList.getTableHeader().setReorderingAllowed(false);
+        tblBookList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBookListMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblBookList);
+
+        pnlBookList.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 1100, 470));
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel5.setText("Search Book:");
+        pnlBookList.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 140, 40));
+
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel6.setText("(Book TItle/Author/Category)");
+        pnlBookList.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 190, -1));
+
+        txtSearchtblBookList.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        txtSearchtblBookList.setBorder(null);
+        txtSearchtblBookList.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchtblBookListKeyReleased(evt);
+            }
+        });
+        pnlBookList.add(txtSearchtblBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 15, 390, 30));
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search-field.png"))); // NOI18N
+        jLabel4.setText("jLabel2");
+        pnlBookList.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 10, 435, 40));
+
+        jPanel1.add(pnlBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
+
         logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-Logo.png"))); // NOI18N
         logo.setText("LOGO");
         logo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -447,6 +498,9 @@ public class UserPage extends javax.swing.JFrame {
         lblNotifiactions.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/notification1.png"))); // NOI18N
         lblNotifiactions.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblNotifiactions.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblNotifiactionsMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 lblNotifiactionsMouseEntered(evt);
             }
@@ -461,6 +515,9 @@ public class UserPage extends javax.swing.JFrame {
         lblMessages.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/messages1.png"))); // NOI18N
         lblMessages.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblMessages.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblMessagesMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 lblMessagesMouseEntered(evt);
             }
@@ -599,6 +656,8 @@ public class UserPage extends javax.swing.JFrame {
         jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 210, 560));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1360, 670));
+
+        bindingGroup.bind();
 
         pack();
         setLocationRelativeTo(null);
@@ -762,14 +821,15 @@ public class UserPage extends javax.swing.JFrame {
             }
         }
         else if(command.equals("Return Book")){
-            transactID = queries.getTransactID(bookID, id);
+            transactID = queries.getTransactID(bookID, id, "BORROWED");
             queries.returnBook(date, transactID);
             JOptionPane.showMessageDialog(null, "Book has been returned.", "Book Returned", JOptionPane.PLAIN_MESSAGE);
         }
         else if(command.equals("Cancel")){
-            transactID = queries.getTransactID(bookID, id);
+            transactID = queries.getTransactID(bookID, id, "PENDING");
             queries.cancelRequest(transactID);
-            JOptionPane.showMessageDialog(null, "Request has been cancelled.", "BRequest Cancelled", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Request has been cancelled.", "Request Cancelled", JOptionPane.PLAIN_MESSAGE);
+            
         }
 
         txtBookID.setText("");
@@ -832,6 +892,22 @@ public class UserPage extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_tblBorrowedBooksMouseClicked
+
+    private void lblMessagesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMessagesMouseClicked
+        hidePanels();
+        pnlMessage.setVisible(true);
+    }//GEN-LAST:event_lblMessagesMouseClicked
+
+    private void lblNotifiactionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotifiactionsMouseClicked
+        if(popMessage.isVisible()){
+            popMessage.setVisible(false);
+        }
+        popNotif.visibility();
+    }//GEN-LAST:event_lblNotifiactionsMouseClicked
+
+    private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
+        
+    }//GEN-LAST:event_btnSendActionPerformed
        
         
     /**
@@ -871,6 +947,7 @@ public class UserPage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnBorrowBook;
+    private javax.swing.JButton btnSend;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -882,11 +959,13 @@ public class UserPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel lblAuthor;
     private javax.swing.JLabel lblBookList;
     private javax.swing.JLabel lblBorrowBooks;
@@ -906,15 +985,18 @@ public class UserPage extends javax.swing.JFrame {
     private javax.swing.JLabel pnlBorrowbooks;
     private javax.swing.JLabel pnlBorrowhistory;
     private javax.swing.JLabel pnlLogout;
+    private javax.swing.JPanel pnlMessage;
     private javax.swing.JLabel pnlMessages;
     private javax.swing.JLabel pnlNotification;
     private javax.swing.JLabel pnlPersonalInfo;
     private javax.swing.JTable tblBookList;
     private javax.swing.JTable tblBorrowedBooks;
     private javax.swing.JTable tblBorrowedHistory;
+    private javax.swing.JTextArea txtAreaMessage;
     private javax.swing.JTextField txtAuthor;
     private javax.swing.JTextField txtBookID;
     private javax.swing.JTextField txtBookTitle;
     private javax.swing.JTextField txtSearchtblBookList;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

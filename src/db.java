@@ -74,17 +74,14 @@ public class db {
                 + ") ENGINE=InnoDB ";
 
         String notificationSql = "CREATE TABLE IF NOT EXISTS `notifications` (\n"
-                + "  `NotificationID` int(11) NOT NULL AUTO_INCREMENT,\n"
-                + "  `userid` int(11) NOT NULL,\n"
-                + "  `bookID` int(11) NOT NULL,\n"
+                + "  `NotificationID` int NOT NULL AUTO_INCREMENT,\n"
+                + "  `userid` int NOT NULL,\n"
                 + "  `Message` varchar(500) NOT NULL,\n"
                 + "  `Date` date NOT NULL,\n"
                 + "  `Status` varchar(6) NOT NULL DEFAULT 'UNREAD',\n"
                 + "  PRIMARY KEY (`NotificationID`),\n"
                 + "  KEY `userid` (`userid`),\n"
-                + "  KEY `bookID` (`bookID`),\n"
-                + "  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`),\n"
-                + "  CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`bookID`) REFERENCES `books` (`BookID`)\n"
+                + "  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`)\n"
                 + ") ENGINE=InnoDB";
 
         try {
@@ -97,7 +94,7 @@ public class db {
             
             con.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
     

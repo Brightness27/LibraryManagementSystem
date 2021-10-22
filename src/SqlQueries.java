@@ -52,7 +52,6 @@ public class SqlQueries {
                 + " `sex`, `birthday`, `address`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int successFailed = 0;
         try {
-            //con = db.getConnection();
             s = con.createStatement();
             rs = s.executeQuery(checkUser);
             if (rs.next()) {
@@ -72,7 +71,6 @@ public class SqlQueries {
                 pst.setString(10, register[9]);
                 pst.setString(11, register[10]);
                 pst.executeUpdate();
-                successFailed = 0;
             }
             rs.close();
             s.close();
@@ -327,6 +325,7 @@ public class SqlQueries {
     public void bookRequest(String request, String transactionID, String date) {
         sql = "UPDATE bookprocessing bp INNER JOIN books b ON bp.bookID = b.bookID SET bp.Status = 'BORROWED', bp.Date_Borrowed = '" + date + "', b.Availability = 'BORROWED' WHERE `Transaction_No.` = " + transactionID;
         String requestDenied = "UPDATE bookprocessing SET Status = '" + request + "' WHERE `Transaction_No.` = " + transactionID;
+        //String notification = "INSERT INTO notifications ("
         try {
             if (request.equals("APPROVED")) {
                 pst = con.prepareStatement(sql);
@@ -355,8 +354,9 @@ public class SqlQueries {
         return id;
     }
     
-    public String getTransactID(String bookID,int id){
-        sql = "SELECT `transaction_No.` FROM bookprocessing WHERE userid = " + id + " AND BookID = " + bookID;
+    public String getTransactID(String bookID,int id, String status){
+        
+        sql = "SELECT `transaction_No.` FROM bookprocessing WHERE userid = " + id + " AND BookID = " + bookID + " AND Status = '" + status + "'";
         String transactID = "";
         
         try {
@@ -392,6 +392,98 @@ public class SqlQueries {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public String[][] getNotifications(int id){
+        sql = "SELECT * FROM notifications WHERE userid = " + id + " ORDER BY Date DESC";
+        String count = "SELECT COUNT(`notificationID`) FROM notifications WHERE userid = " + id;
+        String results[][] = null;
         
+        try {
+            pst = con.prepareStatement(count);
+            rs = pst.executeQuery();
+            rs.next();
+            int rows = rs.getInt(1);
+            results = new String[rows][4];
+            
+            rs.close();
+            pst.close();
+            
+            s = con.createStatement();
+            rs = s.executeQuery(sql);
+            
+            for (int i = 0; rs.next(); i++) {
+                results[i][0] = rs.getString("notificationID");
+                results[i][1] = rs.getString("Message");
+                results[i][2] = rs.getString("Date");
+                results[i][3] = rs.getString("Status");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return results;
+    }
+    
+    public void readNotif(int id){
+        sql = "UPDATE notifications SET Status = 'READ' WHERE notificationID = " + id;
+        
+        try {
+            pst = con.prepareStatement(sql);
+            pst.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String getStatus(int id){
+        String sql = "SELECT status FROM notifications WHERE notificationID = " + id;
+        String status = "";
+        
+        try {
+            s = con.createStatement();
+            rs = s.executeQuery(sql);
+            rs.next();
+            
+            status = rs.getString(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return status;
+    }
+    
+    public String[][] getMessages(int id){
+        sql = "SELECT * FROM messages WHERE userid = " + id + " OR receiverID = " + id;
+        String count = "SELECT COUNT(`messageID`) FROM messages WHERE userid = " + id + " OR receiverID = " + id;
+        String results[][] = null;
+        
+        try {
+            pst = con.prepareStatement(count);
+            rs = pst.executeQuery();
+            rs.next();
+            int rows = rs.getInt(1);
+            results = new String[rows][6];
+            
+            rs.close();
+            pst.close();
+            
+            s = con.createStatement();
+            rs = s.executeQuery(sql);
+            
+            for (int i = 0; rs.next(); i++) {
+                results[i][0] = rs.getString("messageID");
+                results[i][1] = rs.getString("userID");
+                results[i][2] = rs.getString("ReceiverID");
+                results[i][3] = rs.getString("Message");
+                results[i][4] = rs.getString("Date");
+                results[i][5] = rs.getString("Status");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return results;
     }
 }

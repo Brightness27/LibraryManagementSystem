@@ -169,7 +169,7 @@ public class LogInForm extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 880, 540));
 
-        setSize(new java.awt.Dimension(882, 542));
+        pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -185,7 +185,6 @@ public class LogInForm extends javax.swing.JFrame {
     }//GEN-LAST:event_lblsignupMouseExited
 
     private void lblsignupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblsignupMouseClicked
-        
         new SignUpForm().setVisible(true);
         dispose();
     }//GEN-LAST:event_lblsignupMouseClicked

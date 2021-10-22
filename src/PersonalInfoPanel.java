@@ -31,6 +31,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         this.frame = frame;
         this.type = callType;
         this.id = id;
+        lblBdayAlert.setVisible(false);
         yearModel();
         dayModel();
         showPanel();
@@ -202,6 +203,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         bgUsertype = new javax.swing.JLabel();
         txtbday = new javax.swing.JTextField();
         bgBday = new javax.swing.JLabel();
+        lblBdayAlert = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         lblPanelTitle = new javax.swing.JLabel();
 
@@ -509,6 +511,11 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         bgBday.setText("jLabel17");
         jPanel2.add(bgBday, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 300, 200, 50));
 
+        lblBdayAlert.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        lblBdayAlert.setForeground(new java.awt.Color(198, 4, 4));
+        lblBdayAlert.setText("<html><pre style = \"font-family: Dialog, font-color: red\">\nMust be 18 years old and above to be\neligible to register\n</pre>\n</html>");
+        jPanel2.add(lblBdayAlert, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 350, 190, 30));
+
         add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1120, 480));
 
         jPanel3.setBackground(new java.awt.Color(138, 102, 63));
@@ -593,7 +600,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         if(eaddress.isEmpty()){
             emptyFields++;
         }
-        if(phoneNumber.isEmpty()){
+        if(phoneNumber.equals("+63")){
             emptyFields++;
         }
         if(username.isEmpty()){
@@ -641,7 +648,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         if(successFailed == 0){
             JOptionPane.showMessageDialog(null, "Register Succesful.", "Register", JOptionPane.PLAIN_MESSAGE);
             new LogInForm().setVisible(true);
-            this.setVisible(false);
+            frame.dispose();
         }else if(successFailed == 2){
             JOptionPane.showMessageDialog(null, "Unable to register.", "error", JOptionPane.ERROR_MESSAGE);
             txtUsername.setText("");
@@ -666,43 +673,23 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
 
     private void cmbYearItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbYearItemStateChanged
         dayModel();
+        if(lblBdayAlert.isVisible())
+            lblBdayAlert.setVisible(false);
+        computeAge(Integer.parseInt(cmbMonth.getSelectedItem().toString()), Integer.parseInt(cmbDay.getSelectedItem().toString()), Integer.parseInt(cmbYear.getSelectedItem().toString()));
     }//GEN-LAST:event_cmbYearItemStateChanged
 
     private void cmbMonthItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbMonthItemStateChanged
         dayModel();
+        if(lblBdayAlert.isVisible())
+            lblBdayAlert.setVisible(false);
+        computeAge(Integer.parseInt(cmbMonth.getSelectedItem().toString()), Integer.parseInt(cmbDay.getSelectedItem().toString()), Integer.parseInt(cmbYear.getSelectedItem().toString()));
     }//GEN-LAST:event_cmbMonthItemStateChanged
 
     private void cmbDayItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbDayItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED){
-            int month_bday = cmbMonth.getSelectedIndex();
-        int day_bday = cmbDay.getSelectedIndex() + 1;
-        int year_bday = Integer.parseInt(cmbYear.getSelectedItem().toString());
-       
-        cal = new GregorianCalendar();
-        int computeDifference = 0;
-        
-        int month = cal.get(Calendar.MONTH);
-        int year = cal.get(Calendar.YEAR);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        
-        if (month_bday < month) {
-            computeDifference = year - year_bday;
-        } else if (month_bday == month) {
-            if (day_bday <= day) {
-                computeDifference = year - year_bday;
-            } else {
-                computeDifference = (year - 1) - year_bday;
-            }
-        } else {
-            computeDifference = (year - 1) - year_bday;
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+
+            computeAge(Integer.parseInt(cmbMonth.getSelectedItem().toString()), Integer.parseInt(cmbDay.getSelectedItem().toString()), Integer.parseInt(cmbYear.getSelectedItem().toString()));
         }
-        
-        if(computeDifference < 18){
-            JOptionPane.showMessageDialog(null, "Must be 18 years old and above to be eligible to register.", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-        txtAge.setText(computeDifference + "");
-        }
-        
     }//GEN-LAST:event_cmbDayItemStateChanged
 
     private void txtConfirmPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtConfirmPasswordActionPerformed
@@ -773,7 +760,9 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         }
         
         if(computeDifference < 18){
-            JOptionPane.showMessageDialog(null, "Must be 18 years old and above to be eligible to register.", "ERROR", JOptionPane.ERROR_MESSAGE);
+            lblBdayAlert.setVisible(true);
+        }else{
+            lblBdayAlert.setVisible(false);
         }
         txtAge.setText(computeDifference + "");
     }
@@ -812,6 +801,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel lblBdayAlert;
     private javax.swing.JLabel lblConfirmPass;
     private javax.swing.JLabel lblDay;
     private javax.swing.JLabel lblMonth;

@@ -36,11 +36,15 @@ public class AdminPage extends javax.swing.JFrame {
     SqlQueries queries = new SqlQueries();
     String date;
     PersonalInfoPanel pnlInfo;
+    PopupPanel popNotif;
+    PopupPanel popMessage;
     
     AdminPage(int id, String fname, String lname) {
         this.fname = fname;
         this.lname = lname;
         this.id = id;
+        popNotif = new PopupPanel(this, 1160, "Notifications", id);
+        popMessage = new PopupPanel(this, 1080, "Messages", id);
         initComponents();
         hidePanels();
         changeIcon();
@@ -157,12 +161,6 @@ public class AdminPage extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        pnlMembers = new javax.swing.JPanel();
-        jLabel23 = new javax.swing.JLabel();
-        txtsearchMember = new javax.swing.JTextField();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        tblMembers = new javax.swing.JTable();
-        jLabel7 = new javax.swing.JLabel();
         pnlBookList = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBookList = new javax.swing.JTable();
@@ -189,6 +187,12 @@ public class AdminPage extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblBookRequests = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
+        pnlMembers = new javax.swing.JPanel();
+        jLabel23 = new javax.swing.JLabel();
+        txtsearchMember = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblMembers = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
         pnlBorrowHistory = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblBorrowedHistory = new javax.swing.JTable();
@@ -213,7 +217,7 @@ public class AdminPage extends javax.swing.JFrame {
         lblWelcome = new javax.swing.JLabel();
         lblLogout = new javax.swing.JLabel();
         pnlLogout = new javax.swing.JLabel();
-        lblNotifiactions = new javax.swing.JLabel();
+        lblNotifications = new javax.swing.JLabel();
         lblMessages = new javax.swing.JLabel();
         lblPersonalinfo = new javax.swing.JLabel();
         pnlNotification = new javax.swing.JLabel();
@@ -236,62 +240,6 @@ public class AdminPage extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(138, 102, 63));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        pnlMembers.setBackground(new java.awt.Color(226, 200, 171));
-        pnlMembers.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnlMembers.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel23.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel23.setText("Search: ");
-        pnlMembers.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 120, 40));
-
-        txtsearchMember.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        txtsearchMember.setBorder(null);
-        txtsearchMember.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtsearchMemberKeyReleased(evt);
-            }
-        });
-        pnlMembers.add(txtsearchMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 28, 390, 30));
-
-        jScrollPane4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        tblMembers.setBackground(new java.awt.Color(226, 200, 171));
-        tblMembers.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        tblMembers.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "First Name", "Last Name", "User Type", "Status"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblMembers.setRowHeight(30);
-        tblMembers.setSelectionBackground(new java.awt.Color(247, 234, 212));
-        tblMembers.setSelectionForeground(new java.awt.Color(0, 0, 0));
-        tblMembers.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblMembersMouseClicked(evt);
-            }
-        });
-        jScrollPane4.setViewportView(tblMembers);
-
-        pnlMembers.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 1080, 460));
-
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search-field.png"))); // NOI18N
-        jLabel7.setText("jLabel2");
-        pnlMembers.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 20, 435, 45));
-
-        jPanel1.add(pnlMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
         pnlBookList.setBackground(new java.awt.Color(226, 200, 171));
         pnlBookList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -492,6 +440,62 @@ public class AdminPage extends javax.swing.JFrame {
 
         jPanel1.add(pnlBookRequests, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
+        pnlMembers.setBackground(new java.awt.Color(226, 200, 171));
+        pnlMembers.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pnlMembers.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel23.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel23.setText("Search: ");
+        pnlMembers.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 120, 40));
+
+        txtsearchMember.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        txtsearchMember.setBorder(null);
+        txtsearchMember.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtsearchMemberKeyReleased(evt);
+            }
+        });
+        pnlMembers.add(txtsearchMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 28, 390, 30));
+
+        jScrollPane4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        tblMembers.setBackground(new java.awt.Color(226, 200, 171));
+        tblMembers.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        tblMembers.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "First Name", "Last Name", "User Type", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblMembers.setRowHeight(30);
+        tblMembers.setSelectionBackground(new java.awt.Color(247, 234, 212));
+        tblMembers.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        tblMembers.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblMembersMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(tblMembers);
+
+        pnlMembers.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 1080, 460));
+
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search-field.png"))); // NOI18N
+        jLabel7.setText("jLabel2");
+        pnlMembers.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 20, 435, 45));
+
+        jPanel1.add(pnlMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
+
         pnlBorrowHistory.setBackground(new java.awt.Color(226, 200, 171));
         pnlBorrowHistory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pnlBorrowHistory.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -648,22 +652,22 @@ public class AdminPage extends javax.swing.JFrame {
         pnlLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/panel-icons.png"))); // NOI18N
         jPanel1.add(pnlLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(1230, 20, -1, -1));
 
-        lblNotifiactions.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        lblNotifiactions.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblNotifiactions.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/notification1.png"))); // NOI18N
-        lblNotifiactions.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblNotifiactions.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblNotifications.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblNotifications.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblNotifications.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/notification1.png"))); // NOI18N
+        lblNotifications.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblNotifications.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblNotifiactionsMouseClicked(evt);
+                lblNotificationsMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                lblNotifiactionsMouseEntered(evt);
+                lblNotificationsMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                lblNotifiactionsMouseExited(evt);
+                lblNotificationsMouseExited(evt);
             }
         });
-        jPanel1.add(lblNotifiactions, new org.netbeans.lib.awtextra.AbsoluteConstraints(1160, 30, 50, 50));
+        jPanel1.add(lblNotifications, new org.netbeans.lib.awtextra.AbsoluteConstraints(1160, 30, 50, 50));
 
         lblMessages.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         lblMessages.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -912,13 +916,13 @@ public class AdminPage extends javax.swing.JFrame {
         pnlLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/panel-icons.png")));
     }//GEN-LAST:event_lblLogoutMouseExited
 
-    private void lblNotifiactionsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotifiactionsMouseEntered
+    private void lblNotificationsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationsMouseEntered
         pnlNotification.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/hovered-panel-icons.png")));
-    }//GEN-LAST:event_lblNotifiactionsMouseEntered
+    }//GEN-LAST:event_lblNotificationsMouseEntered
 
-    private void lblNotifiactionsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotifiactionsMouseExited
+    private void lblNotificationsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationsMouseExited
         pnlNotification.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/panel-icons.png")));
-    }//GEN-LAST:event_lblNotifiactionsMouseExited
+    }//GEN-LAST:event_lblNotificationsMouseExited
 
     private void lblMessagesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMessagesMouseEntered
         pnlMessages.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/hovered-panel-icons.png")));
@@ -1095,10 +1099,10 @@ public class AdminPage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegisterBookMouseExited
 
     private void lblMessagesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMessagesMouseClicked
-//        boolean show = panelMessages.isVisible();
-//        
-//            panelMessages.setVisible(!show);
-//        
+        if(popNotif.isVisible()){
+            popNotif.setVisible(false);
+        }
+        popMessage.visibility();
     }//GEN-LAST:event_lblMessagesMouseClicked
 
     private void btnRegisterBookMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegisterBookMouseClicked
@@ -1197,9 +1201,12 @@ public class AdminPage extends javax.swing.JFrame {
         filterTable(tblMembers, query);
     }//GEN-LAST:event_txtsearchMemberKeyReleased
 
-    private void lblNotifiactionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotifiactionsMouseClicked
-        
-    }//GEN-LAST:event_lblNotifiactionsMouseClicked
+    private void lblNotificationsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationsMouseClicked
+        if(popMessage.isVisible()){
+            popMessage.setVisible(false);
+        }
+        popNotif.visibility();
+    }//GEN-LAST:event_lblNotificationsMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1276,7 +1283,7 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JLabel lblLogout;
     private javax.swing.JLabel lblMembers;
     private javax.swing.JLabel lblMessages;
-    private javax.swing.JLabel lblNotifiactions;
+    private javax.swing.JLabel lblNotifications;
     private javax.swing.JLabel lblPersonalinfo;
     private javax.swing.JLabel lblRegisterBook;
     private javax.swing.JLabel lblWelcome;
