@@ -15,7 +15,7 @@ public class SqlQueries {
     String sql;
 
     public String[] signIn(String username, String password) {
-        String user[] = new String[4];
+        String user[] = new String[5];
         try {
             //con = db.getConnection();
             s = con.createStatement();
@@ -25,11 +25,9 @@ public class SqlQueries {
                     user[0] = rs.getString("userid");
                     user[1] = rs.getString("first_name");
                     user[2] = rs.getString("last_name");
-                    if (rs.getString("user_type").equals("Student")) {
-                        user[3] = "Student";
-                    } else {
-                        user[3] = "Administrator";
-                    }
+                    user[3] = rs.getString("user_type");
+                    user[4] = rs.getString("Status");
+                    
                 } else {
                     user = null;
                 }

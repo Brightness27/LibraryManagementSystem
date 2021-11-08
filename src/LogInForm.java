@@ -222,11 +222,18 @@ public class LogInForm extends javax.swing.JFrame {
         String user[] = lms.signIn(username, password);
         
         if(user == null){
-            JOptionPane.showMessageDialog(null, "invalid username or password");
+            JOptionPane.showMessageDialog(null, "invalid username or password", "Error", JOptionPane.ERROR_MESSAGE);
             txtusername.setText("");
             txtpassword.setText("");
             txtusername.requestFocus();
         }else{
+            if(user[4].equals("DEACTIVATED")){
+                JOptionPane.showMessageDialog(null, "account deactivated. Contact an admin to reactivate your account", "Error", JOptionPane.ERROR_MESSAGE);
+                txtusername.setText("");
+                txtpassword.setText("");
+                txtusername.requestFocus();
+                return;
+            }
             JOptionPane.showMessageDialog(null, "login successful as " + user[1], "Success", JOptionPane.PLAIN_MESSAGE);
             int id = Integer.parseInt(user[0]);
             if(user[3].equals("Student")){
