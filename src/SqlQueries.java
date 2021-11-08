@@ -82,8 +82,55 @@ public class SqlQueries {
         return successFailed;
     }
     
+    public int updateUser(String register[], int userid) {
+        String checkUser = "SELECT * FROM users WHERE username = '" + register[6] + "'";
+        sql = "UPDATE users SET user_type = ?,"
+                + " first_name = ?,"
+                + " middle_name = ?,"
+                + " last_name = ?,"
+                + " email_address = ?,"
+                + " phone_number = ?,"
+                + "username = ?,"
+                + "password = ?,"
+                + " sex = ?,"
+                + "birthday = ?"
+                + "address = ?"
+                + "WHERE userid = ?";
+        int successFailed = 0;
+        try {
+            s = con.createStatement();
+            rs = s.executeQuery(checkUser);
+            if (rs.next()) {
+                successFailed = 1;
+            } else {
+
+                PreparedStatement pst = con.prepareStatement(sql);
+                pst.setString(1, register[0]);
+                pst.setString(2, register[1]);
+                pst.setString(3, register[2]);
+                pst.setString(4, register[3]);
+                pst.setString(5, register[4]);
+                pst.setString(6, register[5]);
+                pst.setString(7, register[6]);
+                pst.setString(8, register[7]);
+                pst.setString(9, register[8]);
+                pst.setString(10, register[9]);
+                pst.setString(11, register[10]);
+                pst.setInt(12, userid);
+                pst.executeUpdate();
+            }
+            rs.close();
+            s.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            successFailed = 2;
+        }
+        return successFailed;
+    }
+    
     public String[] getUser(int id){
-        String user[] = new String[11];
+        String user[] = new String[12];
         sql = "SELECT * FROM users WHERE userid = " + id;
         
         try {
@@ -102,6 +149,7 @@ public class SqlQueries {
             user[8] = rs.getString("sex");
             user[9] = rs.getString("email_address");
             user[10] = rs.getString("birthday");
+            user[11] = rs.getString("Status");
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,7 +191,7 @@ public class SqlQueries {
     }
 
     public String[][] showBooks() {
-        sql = "SELECT * FROM books";
+        sql = "SELECT * FROM books WHERE Availability  NOT IN ('REMOVED')";
         String books[][] = new String[0][5];
 
         try {
@@ -173,19 +221,125 @@ public class SqlQueries {
 
         return books;
     }
-
-    public String[][] showBookTransactions(int id) {
-        sql = "SELECT `bp`.`Transaction_No.`, `b`.`book_Title`, `b`.`Author`, `bp`.`Date_Borrowed`, `bp`.`Date_Returned`, `bp`.`Status` "
-                + "FROM `bookprocessing` `bp` INNER JOIN `books` `b` ON `bp`.`BookID` = `b`.`BookID` WHERE `bp`.`userid` = " + id;
-        String books[][] = new String[0][6];
+    
+    public String[][] filterTables(String table, String query, int id) {
+            String books = "SELECT * FROM books WHERE "
+                    + "book_Title LIKE  '%" + query + "%' OR Category LIKE '%" + query + "%' OR Author LIKE '%" + query + "%' OR Availability LIKE '%" + query + "%'";
+            String members = "SELECT * FROM users WHERE "
+                    + "userid NOT IN (" + id + ") AND"
+                    + " (first_name LIKE '%" + query + "%' OR last_name LIKE '%" + query + "%' OR user_type LIKE '%" + query + "%' OR status LIKE '%" + query + "%')";
+            
+        String tables[][] = new String[0][5];
 
         try {
-            //con = db.getConnection();
-            pst = con.prepareStatement("SELECT COUNT(`Transaction_No.`) FROM bookprocessing WHERE userid = " + id);
+            if (table.equals("books")) {
+                pst = con.prepareStatement("SELECT COUNT(bookID) FROM books WHERE"
+                        + " book_Title LIKE  '%" + query + "%' OR Category LIKE '%" + query + "%' OR Author LIKE '%" + query + "%' OR Availability LIKE '%" + query + "%'");
+                rs = pst.executeQuery();
+                rs.next();
+                int rows = rs.getInt(1);
+                tables = new String[rows][5];
+                rs.close();
+                pst.close();
+                s = con.createStatement();
+                rs = s.executeQuery(books);
+                for (int i = 0; rs.next(); i++) {
+                    tables[i][0] = rs.getString("BookID");
+                    tables[i][1] = rs.getString("Category");
+                    tables[i][2] = rs.getString("Book_Title");
+                    tables[i][3] = rs.getString("Author");
+                    tables[i][4] = rs.getString("Availability");
+                }
+            }else if(table.equals("users")){
+                pst = con.prepareStatement("SELECT COUNT(userid) FROM users WHERE "
+                        + "userid NOT IN (" + id + ") AND"
+                    + " (first_name LIKE '%" + query + "%' OR last_name LIKE '%" + query + "%' OR user_type LIKE '%" + query + "%' OR status LIKE '%" + query + "%')");
+                rs = pst.executeQuery();
+                rs.next();
+                int rows = rs.getInt(1);
+                tables = new String[rows][5];
+
+                rs.close();
+                pst.close();
+
+                s = con.createStatement();
+                rs = s.executeQuery(members);
+
+                for (int i = 0; rs.next(); i++) {
+                    tables[i][0] = rs.getString("userid");
+                    tables[i][1] = rs.getString("first_name");
+                    tables[i][2] = rs.getString("last_name");
+                    tables[i][3] = rs.getString("user_type");
+                    tables[i][4] = rs.getString("status");
+                }
+            }
+            else{
+                pst = con.prepareStatement("SELECT first_name, last_name FROM users WHERE userid = " + id);
+                rs = pst.executeQuery();
+                rs.next();
+                String librarian = rs.getString("first_name") + " " + rs.getString("last_name");
+                rs.close();
+                pst.close();
+              
+                pst = con.prepareStatement("SELECT COUNT(t.`Transaction_No.`) FROM ("
+                        + " SELECT * FROM transactions WHERE NOT (Status = 'BORROWED' AND Librarian = '" + librarian + "')) t"
+                        + " INNER JOIN users u ON t.userid = u.userid"
+                        + " INNER JOIN books b ON t.BookID = b.BookID"
+                        + " WHERE (t.Status NOT IN('PENDING', 'CANCELLED')"
+                        + " AND (t.Date_Borrowed LIKE '%" + query + "%' OR t.Date_Returned LIKE '%" + query + "%' OR t.Status LIKE '%" + query + "%'"
+                        + " OR t.Librarian LIKE '%" + query + "%' OR CONCAT(u.first_name, ' ', u.last_name) LIKE '%" + query + "%'"
+                        + " OR b.book_Title LIKE '%" + query + "%' OR b.Author LIKE '%" + query + "%'))");
+                rs = pst.executeQuery();
+                rs.next();
+                int rows = rs.getInt(1);
+                tables = new String[rows][8];
+
+                rs.close();
+                pst.close();
+                String transactions = "SELECT t.`Transaction_No.`, CONCAT(u.first_name, ' ', u.last_name) as `Borrower`, b.book_Title,"
+                        + "b.Author, t.Date_Borrowed, t.Date_Returned, t.Status, t.Librarian FROM ("
+                        + " SELECT * FROM transactions WHERE NOT (Status = 'BORROWED' AND Librarian = '" + librarian + "')) t"
+                        + " INNER JOIN users u ON t.userid = u.userid"
+                        + " INNER JOIN books b ON t.BookID = b.BookID"
+                        + " WHERE (t.Status NOT IN('PENDING', 'CANCELLED')"
+                        + " AND (t.Date_Borrowed LIKE '%" + query + "%' OR t.Date_Returned LIKE '%" + query + "%' OR t.Status LIKE '%" + query + "%'"
+                        + " OR t.Librarian LIKE '%" + query + "%' OR CONCAT(u.first_name, ' ', u.last_name) LIKE '%" + query + "%'"
+                        + " OR b.book_Title LIKE '%" + query + "%' OR b.Author LIKE '%" + query + "%')) ORDER BY t.`Transaction_No.` DESC";
+                
+                s = con.createStatement();
+                rs = s.executeQuery(transactions);
+
+                for (int i = 0; rs.next(); i++) {
+                    tables[i][0] = rs.getString("Transaction_No.");
+                    tables[i][1] = rs.getString("Borrower");
+                    tables[i][2] = rs.getString("book_Title");
+                    tables[i][3] = rs.getString("Author");
+                    tables[i][4] = rs.getString("Date_Borrowed");
+                    tables[i][5] = rs.getString("Date_Returned");
+                    tables[i][6] = rs.getString("Status");
+                    tables[i][7] = rs.getString("Librarian");
+
+                }
+            }
+
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tables;
+    }
+
+    public String[][] showBookTransactions(int id) {
+        sql = "SELECT `t`.`Transaction_No.`, `b`.`book_Title`, `b`.`Author`, `t`.`Date_Borrowed`, `t`.`Date_Returned`, `t`.`Status`, `t`.`Librarian` "
+                + "FROM `transactions` `t` INNER JOIN `books` `b` ON `t`.`BookID` = `b`.`BookID` WHERE `t`.`userid` = " + id + " ORDER BY `Transaction_No.` DESC";
+        String books[][] = new String[0][7];
+
+        try {
+            pst = con.prepareStatement("SELECT COUNT(`Transaction_No.`) FROM transactions WHERE userid = " + id);
             rs = pst.executeQuery();
             rs.next();
             int rows = rs.getInt(1);
-            books = new String[rows][6];
+            books = new String[rows][7];
 
             rs.close();
             pst.close();
@@ -200,6 +354,7 @@ public class SqlQueries {
                 books[i][3] = rs.getString("Date_Borrowed");
                 books[i][4] = rs.getString("Date_Returned");
                 books[i][5] = rs.getString("Status");
+                books[i][6] = rs.getString("Librarian");
 
             }
         } catch (Exception e) {
@@ -209,21 +364,22 @@ public class SqlQueries {
         return books;
     }
 
-    public String[][] showBookRequests() {
-        sql = "SELECT `bp`.`Transaction_No.`, `b`.`Book_Title`, `b`.`Author`, `u`.`last_name`, `u`.`first_name`, `bp`.`Date_Borrowed`, `bp`.`Date_Returned`, `bp`.`Status`"
-                + " FROM `bookprocessing` `bp` "
+    public String[][] showBookRequests(String librarian) {
+        sql = "SELECT `bp`.`Transaction_No.`, `b`.`Book_Title`, `b`.`Author`, `u`.`last_name`, `u`.`first_name`, `bp`.`Date_Borrowed`, `bp`.`Date_Returned`, `bp`.`Status`, `bp`.`Librarian`"
+                + " FROM `transactions` `bp` "
                 + "INNER JOIN `books` `b` ON `bp`.`bookID` = `b`.`bookID`"
-                + "INNER JOIN `users` `u` ON `bp`.`userid` = `u`.`userid` ORDER BY `bp`.`Transaction_No.`";
+                + "INNER JOIN `users` `u` ON `bp`.`userid` = `u`.`userid`"
+                + " ORDER BY `bp`.`Transaction_No.` DESC";
 
-        String books[][] = new String[0][7];
+        String books[][] = new String[0][8];
 
         try {
             //con = db.getConnection();
-            pst = con.prepareStatement("SELECT COUNT(`Transaction_No.`) FROM bookprocessing");
+            pst = con.prepareStatement("SELECT COUNT(`Transaction_No.`) FROM transactions");
             rs = pst.executeQuery();
             rs.next();
             int rows = rs.getInt(1);
-            books = new String[rows][7];
+            books = new String[rows][8];
 
             rs.close();
             pst.close();
@@ -233,12 +389,13 @@ public class SqlQueries {
 
             for (int i = 0; rs.next(); i++) {
                 books[i][0] = rs.getString("Transaction_No.");
-                books[i][1] = rs.getString("last_name") + ", " + rs.getString("first_name");
+                books[i][1] = rs.getString("first_name") + " " + rs.getString("last_name");
                 books[i][2] = rs.getString("Book_Title");
                 books[i][3] = rs.getString("Author");
                 books[i][4] = rs.getString("Date_Borrowed");
                 books[i][5] = rs.getString("Date_Returned");
                 books[i][6] = rs.getString("Status");
+               books[i][7] = rs.getString("Librarian");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -270,6 +427,8 @@ public class SqlQueries {
             e.printStackTrace();
         }
     }
+    
+    
 
     public String checkBook(String[] book, int id) {
         String result = "";
@@ -285,7 +444,7 @@ public class SqlQueries {
                     if (result.equals("BORROWED")) {
                         return result;
                     } else {
-                        rs = s.executeQuery("SELECT * FROM Bookprocessing WHERE BookID = '" + book[0] + "' AND userid = " + id + " AND Status = 'PENDING'");
+                        rs = s.executeQuery("SELECT * FROM transactions WHERE BookID = '" + book[0] + "' AND userid = " + id + " AND Status = 'PENDING'");
 
                         if (rs.next()) {
                             result = "PENDING";
@@ -307,9 +466,8 @@ public class SqlQueries {
     }
 
     public void requestBook(String bookID, int id) {
-        sql = "INSERT INTO bookprocessing (`userid`,`BookID`, `Status`) VALUES (?, ?, 'PENDING')";
+        sql = "INSERT INTO transactions (`userid`,`BookID`, `Status`) VALUES (?, ?, 'PENDING')";
         try {
-            //con = db.getConnection();
             pst = con.prepareStatement(sql);
             pst.setInt(1, id);
             pst.setString(2, bookID);
@@ -322,17 +480,19 @@ public class SqlQueries {
         }
     }
 
-    public void bookRequest(String request, String transactionID, String date) {
-        sql = "UPDATE bookprocessing bp INNER JOIN books b ON bp.bookID = b.bookID SET bp.Status = 'BORROWED', bp.Date_Borrowed = '" + date + "', b.Availability = 'BORROWED' WHERE `Transaction_No.` = " + transactionID;
-        String requestDenied = "UPDATE bookprocessing SET Status = '" + request + "' WHERE `Transaction_No.` = " + transactionID;
-        //String notification = "INSERT INTO notifications ("
+    public void bookRequest(String request, String transactionID, String date, String librarian) {
+        String requestApproved = "UPDATE transactions bp INNER JOIN books b ON bp.bookID = b.bookID SET bp.Status = 'BORROWED',"
+                + " bp.Date_Borrowed = '" + date + "', b.Availability = 'BORROWED', bp.Librarian = '" + librarian + "' WHERE `Transaction_No.` = " + transactionID;
+        
+        String requestDenied = "UPDATE transactions SET Status = '" + request + "', Librarian = '" + librarian + "' WHERE `Transaction_No.` = " + transactionID;
         try {
             if (request.equals("APPROVED")) {
-                pst = con.prepareStatement(sql);
+                sql = requestApproved;
 
             } else {
-                pst = con.prepareStatement(requestDenied);
+                sql = requestDenied;
             }
+            pst = con.prepareStatement(sql);
             pst.execute();
         } catch (Exception e) {
             e.printStackTrace();
@@ -340,7 +500,7 @@ public class SqlQueries {
     }
 
     public String getBookID(String transactionID) {
-        sql = "SELECT BookID FROM bookprocessing WHERE `transaction_No.` = " + transactionID;
+        sql = "SELECT BookID FROM transactions WHERE `transaction_No.` = " + transactionID;
         String id = "";
         try {
             s = con.createStatement();
@@ -356,7 +516,7 @@ public class SqlQueries {
     
     public String getTransactID(String bookID,int id, String status){
         
-        sql = "SELECT `transaction_No.` FROM bookprocessing WHERE userid = " + id + " AND BookID = " + bookID + " AND Status = '" + status + "'";
+        sql = "SELECT `transaction_No.` FROM transactions WHERE userid = " + id + " AND BookID = " + bookID + " AND Status = '" + status + "'";
         String transactID = "";
         
         try {
@@ -372,7 +532,7 @@ public class SqlQueries {
     }
 
     public void returnBook(String date, String transactID){
-        sql = "UPDATE bookprocessing bp INNER JOIN books b ON bp.bookID = b.bookID"
+        sql = "UPDATE transactions bp INNER JOIN books b ON bp.bookID = b.bookID"
                 + " SET bp.Status = 'RETURNED', bp.Date_Returned = '" + date + "', b.Availability = 'AVAILABLE' WHERE bp.`Transaction_No.` = " + transactID;
         
         try {
@@ -384,14 +544,29 @@ public class SqlQueries {
     }
     
     public void cancelRequest(String transactID){
-        sql = "UPDATE bookprocessing SET Status = 'CANCELLED' WHERE `Transaction_No.` = " + transactID;
-        
+        sql = "UPDATE transactions SET Status = 'CANCELLED' WHERE `Transaction_No.` = " + transactID;
         try {
             pst = con.prepareStatement(sql);
             pst.execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public int changeStatusMember(int id, String status){
+        status = status.toUpperCase() + "D";
+        sql = "UPDATE users SET status = '" + status + "' WHERE userid = " + id;
+        int stat = 0;
+        
+        try {
+            pst = con.prepareStatement(sql);
+            pst.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            stat = 1;
+        }
+        
+        return stat;
     }
     
     public String[][] getNotifications(int id){

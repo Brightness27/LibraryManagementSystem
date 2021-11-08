@@ -3,6 +3,7 @@ import java.awt.event.ItemEvent;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
 /*
@@ -21,6 +22,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
     String type;
     int id;
     JFrame frame;
+    JInternalFrame frame2;
     
     public PersonalInfoPanel() {
         initComponents();
@@ -29,6 +31,17 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
     public PersonalInfoPanel(JFrame frame, String callType, int id){
         initComponents();
         this.frame = frame;
+        this.type = callType;
+        this.id = id;
+        lblBdayAlert.setVisible(false);
+        yearModel();
+        dayModel();
+        showPanel();
+    }
+    
+    public PersonalInfoPanel(JInternalFrame frame, String callType, int id){
+        initComponents();
+        this.frame2 = frame;
         this.type = callType;
         this.id = id;
         lblBdayAlert.setVisible(false);
@@ -49,7 +62,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
             setFields();
             listUserType.setEnabled(true);
             hideExtraComponents();
-            disableComponents();
+            btnRegister.setText("Update");
         }
         else if(type.equals("Signup")){
             bgUsertype.setVisible(false);
@@ -58,8 +71,14 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
             bgSex.setVisible(false);
             txtSex.setVisible(false);
             
+            btnActivate.setVisible(false);
+            pnlActivate.setVisible(false);
+            
             bgBday.setVisible(false);
             txtbday.setVisible(false);
+            if(id == -1){
+                listUserType.setEnabled(true);
+            }
         }
     }
     
@@ -100,6 +119,8 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
             bgConfirmPass.setVisible(false);
             txtConfirmPassword.setVisible(false);
             lblConfirmPass.setVisible(false);
+            btnActivate.setVisible(false);
+            pnlActivate.setVisible(false);
             
     }
     
@@ -122,7 +143,11 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         txtUserType.setText(user[0]);
         
         txtFirstName.setText(user[1]);
-        txtMiddleName.setText(user[2]);
+        if(user[2].equals("N/A")){
+            txtMiddleName.setText("");
+        }else{
+            txtMiddleName.setText(user[2]);
+        }
         txtLastName.setText(user[3]);
         txtAddress.setText(user[4]);
         txtUsername.setText(user[5]);
@@ -140,6 +165,11 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         cmbMonth.setSelectedItem(bday[1]);
         cmbDay.setSelectedItem(bday[2]);
         computeAge(Integer.parseInt(bday[1]), Integer.parseInt(bday[2]), Integer.parseInt(bday[0]));
+        if(user[11].equals("ACTIVATED")){
+            btnActivate.setText("Deactivate");
+        }else{
+            btnActivate.setText("Activate");
+        }
     }
     
     
@@ -174,6 +204,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         jLabel12 = new javax.swing.JLabel();
         txtEmailAddress = new javax.swing.JTextField();
         btnRegister = new javax.swing.JLabel();
+        pnlRegister = new javax.swing.JLabel();
         btnExit = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         txtAge = new javax.swing.JTextField();
@@ -193,7 +224,6 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
-        pnlRegister = new javax.swing.JLabel();
         bgConfirmPass = new javax.swing.JLabel();
         jLabel31 = new javax.swing.JLabel();
         pnlExit = new javax.swing.JLabel();
@@ -204,6 +234,8 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         txtbday = new javax.swing.JTextField();
         bgBday = new javax.swing.JLabel();
         lblBdayAlert = new javax.swing.JLabel();
+        btnActivate = new javax.swing.JLabel();
+        pnlActivate = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         lblPanelTitle = new javax.swing.JLabel();
 
@@ -352,6 +384,10 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         });
         jPanel2.add(btnRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 390, 100, 50));
 
+        pnlRegister.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/buttonborder2.png"))); // NOI18N
+        pnlRegister.setText("jLabel17");
+        jPanel2.add(pnlRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 390, 100, 50));
+
         btnExit.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         btnExit.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnExit.setText("Cancel");
@@ -464,10 +500,6 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         jLabel26.setText("jLabel17");
         jPanel2.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, 200, 50));
 
-        pnlRegister.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/buttonborder2.png"))); // NOI18N
-        pnlRegister.setText("jLabel17");
-        jPanel2.add(pnlRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 390, 100, 50));
-
         bgConfirmPass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/signup-fields.png"))); // NOI18N
         bgConfirmPass.setText("jLabel17");
         jPanel2.add(bgConfirmPass, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 300, 200, 50));
@@ -516,7 +548,22 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         lblBdayAlert.setText("<html><pre style = \"font-family: Dialog, font-color: red\">\nMust be 18 years old and above to be\neligible to register\n</pre>\n</html>");
         jPanel2.add(lblBdayAlert, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 350, 190, 30));
 
-        add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1120, 480));
+        btnActivate.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        btnActivate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnActivate.setText("Activate");
+        btnActivate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnActivate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnActivateMouseClicked(evt);
+            }
+        });
+        jPanel2.add(btnActivate, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 30, 110, 50));
+
+        pnlActivate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/activate-button.png"))); // NOI18N
+        pnlActivate.setText("jLabel17");
+        jPanel2.add(pnlActivate, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 30, 110, 50));
+
+        add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1120, 450));
 
         jPanel3.setBackground(new java.awt.Color(138, 102, 63));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -560,13 +607,9 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
 
     private void txtContactNumberKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContactNumberKeyTyped
         char c = evt.getKeyChar();
-        if(!Character.isDigit(c)){
+        if((!txtContactNumber.getText().isEmpty() && txtContactNumber.getText().length() == 10) || !Character.isDigit(c)){
             evt.consume();
             return;
-        }
-
-        if( !txtContactNumber.getText().isEmpty() && txtContactNumber.getText().length() == 10){
-            evt.consume();
         }
     }//GEN-LAST:event_txtContactNumberKeyTyped
 
@@ -616,59 +659,123 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
             emptyFields++;
         }
 
-        if(emptyFields != 0){
-            JOptionPane.showMessageDialog(null, "please fill up all neccessary fields", "error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        if (type.equals("Signup")) {
+            if (emptyFields != 0) {
+                JOptionPane.showMessageDialog(null, "please fill up all neccessary fields", "error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (phoneNumber.length() != 13) {
+                JOptionPane.showMessageDialog(null, "please input valid phone number", "error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        if(!password.equals(confirmPassword)){
-            JOptionPane.showMessageDialog(null, "Passwords does not match", "error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+            if (!password.equals(confirmPassword)) {
+                JOptionPane.showMessageDialog(null, "Passwords does not match", "error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        if(Integer.parseInt(age) < 18){
-            JOptionPane.showMessageDialog(null, "Must be 18 years old and above to be eligible to register.", "ERROR", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+            if (Integer.parseInt(age) < 18) {
+                JOptionPane.showMessageDialog(null, "Must be 18 years old and above to be eligible to register.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        register[0] = usertype;
-        register[1] = fname;
-        register[2] = mname;
-        register[3] = lname;
-        register[4] = eaddress;
-        register[5] = phoneNumber;
-        register[6] = username;
-        register[7] = password;
-        register[8] = sex;
-        register[9] = bday;
-        register[10] = address;
+            register[0] = usertype;
+            register[1] = fname;
+            register[2] = mname;
+            register[3] = lname;
+            register[4] = eaddress;
+            register[5] = phoneNumber;
+            register[6] = username;
+            register[7] = password;
+            register[8] = sex;
+            register[9] = bday;
+            register[10] = address;
 
-        int successFailed = lms.register(register);
+            int successFailed = lms.register(register);
 
-        if(successFailed == 0){
-            JOptionPane.showMessageDialog(null, "Register Succesful.", "Register", JOptionPane.PLAIN_MESSAGE);
-            new LogInForm().setVisible(true);
-            frame.dispose();
-        }else if(successFailed == 2){
-            JOptionPane.showMessageDialog(null, "Unable to register.", "error", JOptionPane.ERROR_MESSAGE);
-            txtUsername.setText("");
-            txtPassword.setText("");
-            txtConfirmPassword.setText("");
-        }
-        else{
-            JOptionPane.showMessageDialog(null, "username already in use.", "error", JOptionPane.ERROR_MESSAGE);
-            txtUsername.setText("");
-            txtPassword.setText("");
-            txtConfirmPassword.setText("");
+            if (successFailed == 0) {
+                JOptionPane.showMessageDialog(null, "Register Succesful.", "Register", JOptionPane.PLAIN_MESSAGE);
+                if (id == 0) {
+                    new LogInForm().setVisible(true);
+                    frame.dispose();
+                } else if (id == -1) {
+                    frame2.dispose();
+                }
+            } else if (successFailed == 2) {
+                JOptionPane.showMessageDialog(null, "Unable to register.", "error", JOptionPane.ERROR_MESSAGE);
+                txtUsername.setText("");
+                txtPassword.setText("");
+                txtConfirmPassword.setText("");
+            } else {
+                JOptionPane.showMessageDialog(null, "username already in use.", "error", JOptionPane.ERROR_MESSAGE);
+                txtUsername.setText("");
+                txtPassword.setText("");
+                txtConfirmPassword.setText("");
+            }
+        }else{
+            if (emptyFields != 0) {
+                JOptionPane.showMessageDialog(null, "please fill up all neccessary fields", "error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (phoneNumber.length() != 13) {
+                JOptionPane.showMessageDialog(null, "please input valid phone number", "error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!password.equals(confirmPassword)) {
+                JOptionPane.showMessageDialog(null, "Passwords does not match", "error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (Integer.parseInt(age) < 18) {
+                JOptionPane.showMessageDialog(null, "Must be 18 years old and above to be eligible to register.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            register[0] = usertype;
+            register[1] = fname;
+            register[2] = mname;
+            register[3] = lname;
+            register[4] = eaddress;
+            register[5] = phoneNumber;
+            register[6] = username;
+            register[7] = password;
+            register[8] = sex;
+            register[9] = bday;
+            register[10] = address;
+            
+            int successFailed = lms.updateUser(register, id);
+
+            if (successFailed == 0) {
+                JOptionPane.showMessageDialog(null, "Update Succesful.", "Update", JOptionPane.PLAIN_MESSAGE);
+                
+                    frame2.dispose();
+                
+            } else if (successFailed == 2) {
+                JOptionPane.showMessageDialog(null, "Unable to Update.", "error", JOptionPane.ERROR_MESSAGE);
+                txtUsername.setText("");
+                txtPassword.setText("");
+                txtConfirmPassword.setText("");
+            } else {
+                JOptionPane.showMessageDialog(null, "username already in use.", "error", JOptionPane.ERROR_MESSAGE);
+                txtUsername.setText("");
+                txtPassword.setText("");
+                txtConfirmPassword.setText("");
+            }
         }
     }//GEN-LAST:event_btnRegisterMouseClicked
 
     private void btnExitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExitMouseClicked
-        int ask = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel registration?", "Cancel", JOptionPane.OK_CANCEL_OPTION);
-        if(ask == 0){
+        if (id == 0) {
+            int ask = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel registration?", "Cancel", JOptionPane.OK_CANCEL_OPTION);
+            if (ask == 0) {
                 new LogInForm().setVisible(true);
                 frame.dispose();
+            }
+        }else if(id == -1){
+            frame2.dispose();
         }
+        
     }//GEN-LAST:event_btnExitMouseClicked
 
     private void cmbYearItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbYearItemStateChanged
@@ -707,6 +814,20 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
     private void txtContactNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContactNumberActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtContactNumberActionPerformed
+
+    private void btnActivateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnActivateMouseClicked
+        String status = btnActivate.getText();
+        int confirm = JOptionPane.showConfirmDialog(null, status + " user?", "Confirm", JOptionPane.OK_CANCEL_OPTION);
+        if (confirm == 0) {
+            int changeStatus = lms.changeStatusMember(id, status);
+            if (changeStatus == 0) {
+                JOptionPane.showMessageDialog(null, "Status changed", "Success", JOptionPane.PLAIN_MESSAGE);
+                frame2.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Status failed to change", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnActivateMouseClicked
 
     Calendar cal;
     private void dayModel(){
@@ -772,6 +893,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
     private javax.swing.JLabel bgConfirmPass;
     private javax.swing.JLabel bgSex;
     private javax.swing.JLabel bgUsertype;
+    private javax.swing.JLabel btnActivate;
     private javax.swing.JLabel btnExit;
     private javax.swing.JLabel btnRegister;
     private javax.swing.JComboBox<String> cmbDay;
@@ -809,6 +931,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblYear;
     private javax.swing.JLabel lblnum;
     private javax.swing.JComboBox<String> listUserType;
+    private javax.swing.JLabel pnlActivate;
     private javax.swing.JLabel pnlExit;
     private javax.swing.JLabel pnlRegister;
     private javax.swing.JTextField txtAddress;

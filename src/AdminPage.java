@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
@@ -36,16 +37,17 @@ public class AdminPage extends javax.swing.JFrame {
     SqlQueries queries = new SqlQueries();
     String date;
     PersonalInfoPanel pnlInfo;
+    PersonalInfoPanel registerPanel;
     PopupPanel popNotif;
     PopupPanel popMessage;
     
     AdminPage(int id, String fname, String lname) {
+        initComponents();
         this.fname = fname;
         this.lname = lname;
         this.id = id;
         popNotif = new PopupPanel(this, 1160, "Notifications", id);
         popMessage = new PopupPanel(this, 1080, "Messages", id);
-        initComponents();
         hidePanels();
         changeIcon();
         showMembers();
@@ -53,22 +55,80 @@ public class AdminPage extends javax.swing.JFrame {
         setTableColumnSize();
         showBookTransactions();
         setCurrentDate();
+        showSelectedPanel();
+        registerPanel = new PersonalInfoPanel(registerFrame, "Signup", -1);
+        
     }
     
     public void changeIcon() {
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("Resources/Frame-Logo.png")));
         pnlBookList.setVisible(true);
         lblWelcome.setText("Welcome, " + fname);
+        
+        btnReturn.setVisible(false);
+        pnlReturn.setVisible(false);
     }
     
     private void hidePanels(){
         pnlBookList.setVisible(false);
+        registerFrame.setVisible(false);
         pnlBookRequests.setVisible(false);
         pnlBorrowHistory.setVisible(false);
         pnlMembers.setVisible(false);
         pnlRegisterBook.setVisible(false);
         if(pnlInfo != null)
             pnlInfo.setVisible(false);
+        
+        txtRegBookID.setText("");
+        txtRegCategory.setText("");
+        txtRegBookTitle.setText("");
+        txtRegAuthor.setText("");
+        txtSearchtblBookList.setText("");
+        txtBorrower.setText("");
+        txtBookTitle.setText("");
+        txtAuthor.setText("");
+        txtsearchMember.setText("");
+        
+        showBooks();
+        showMembers();
+    }
+    
+    private void showSelectedPanel(){
+        pnlBooklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        pnlRegisterbook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        pnlBookrequests.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        pnlBorrowhistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        pnlmembers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        
+        lblBookRequests.setForeground(Color.BLACK);
+        lblRegisterBook.setForeground(Color.BLACK);
+        lblBookList.setForeground(Color.BLACK);
+        lblBorrowHistory.setForeground(Color.BLACK);
+        lblMembers.setForeground(Color.BLACK);
+        
+        
+        if(pnlBookRequests.isVisible()){
+            pnlBookrequests.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/selected-user-admin-panel.png")));
+            lblBookRequests.setForeground(Color.white);
+        }
+        if(pnlRegisterBook.isVisible() && pnlBookList.isVisible()){
+            pnlRegisterbook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/selected-user-admin-panel.png")));
+            lblRegisterBook.setForeground(Color.white);
+        }
+        else if(pnlBookList.isVisible()){
+            pnlBooklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/selected-user-admin-panel.png")));
+            lblBookList.setForeground(Color.white);
+        }
+        
+        if(pnlBorrowHistory.isVisible()){
+            pnlBorrowhistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/selected-user-admin-panel.png")));
+            lblBorrowHistory.setForeground(Color.white);
+        }
+        if(pnlMembers.isVisible() || registerFrame.isVisible()){
+            pnlmembers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/selected-user-admin-panel.png")));
+            lblMembers.setForeground(Color.white);
+        }
+        
     }
     
     private void showMembers(){
@@ -92,32 +152,41 @@ public class AdminPage extends javax.swing.JFrame {
     }
     
     private void showBookTransactions(){
-        String books[][] = queries.showBookRequests();
+        String librarian = fname + " " + lname;
+        String books[][] = queries.showBookRequests(librarian);
         DefaultTableModel bookRequestModel = (DefaultTableModel) tblBookRequests.getModel();
         DefaultTableModel bookHistoryModel = (DefaultTableModel) tblBorrowedHistory.getModel();
         bookRequestModel.setRowCount(0);
         bookHistoryModel.setRowCount(0);
-        
         for (int i = 0; i < books.length; i++){
           
-            if(books[i][6].equals("RETURNED") || books[i][6].equals("DENIED") || books[i][6].equals("CANCELLED")){
-                String borrowHistoryRow[] = {books[i][0], books[i][1], books[i][2], books[i][3], books[i][4], books[i][5], books[i][6]};
+            if(books[i][6].equals("RETURNED") || books[i][6].equals("DENIED")){
+                String borrowHistoryRow[] = {books[i][0], books[i][1], books[i][2], books[i][3], books[i][4], books[i][5], books[i][6], books[i][7]};
                 bookHistoryModel.addRow(borrowHistoryRow);
             }
-            else{
-                String borrowRequest[] = {books[i][0], books[i][1], books[i][2], books[i][3], books[i][4], books[i][6]};
-                bookRequestModel.addRow(borrowRequest);
+            else if (books[i][6].equals("PENDING") || books[i][6].equals("BORROWED")) {
+                if (books[i][7].equals(librarian) || books[i][7].equals("--")) {
+                    String borrowRequest[] = {books[i][0], books[i][1], books[i][2], books[i][3], books[i][4], books[i][6]};
+                    bookRequestModel.addRow(borrowRequest);
+                } else {
+                    String borrowHistoryRow[] = {books[i][0], books[i][1], books[i][2], books[i][3], books[i][4], books[i][5], books[i][6], books[i][7]};
+                    bookHistoryModel.addRow(borrowHistoryRow);
+                }
+
             }
-           
+
         }
     }
     
-    public void filterTable(JTable table, String query){
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(model);
-		table.setRowSorter(tr);
-		tr.setRowFilter(RowFilter.regexFilter(query));
-	}
+    public void filterTable(JTable table, String query, String tbl, int id){
+        String books[][] = queries.filterTables(tbl, query, id);
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (int i = 0; i < books.length; i++) {
+            model.addRow(books[i]);
+        }
+    }
     
     private void setCurrentDate(){
         cal = new GregorianCalendar();
@@ -161,6 +230,13 @@ public class AdminPage extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        pnlBorrowHistory = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblBorrowedHistory = new javax.swing.JTable();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        txtSearchtbltransaction = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
         pnlBookList = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBookList = new javax.swing.JTable();
@@ -170,7 +246,7 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         pnlBookRequests = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
+        lblTitle = new javax.swing.JLabel();
         txtBookTitle = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         txtAuthor = new javax.swing.JTextField();
@@ -184,6 +260,8 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         btnDecline = new javax.swing.JLabel();
         pnlDecline = new javax.swing.JLabel();
+        btnReturn = new javax.swing.JLabel();
+        pnlReturn = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblBookRequests = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
@@ -193,10 +271,9 @@ public class AdminPage extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         tblMembers = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
-        pnlBorrowHistory = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tblBorrowedHistory = new javax.swing.JTable();
-        jLabel11 = new javax.swing.JLabel();
+        btnRegisterMember = new javax.swing.JLabel();
+        pnlRegisterMember = new javax.swing.JLabel();
+        registerFrame = new javax.swing.JInternalFrame();
         pnlRegisterBook = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
@@ -235,11 +312,71 @@ public class AdminPage extends javax.swing.JFrame {
         lblMembers = new javax.swing.JLabel();
         pnlmembers = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(138, 102, 63));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        pnlBorrowHistory.setBackground(new java.awt.Color(226, 200, 171));
+        pnlBorrowHistory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pnlBorrowHistory.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jScrollPane3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        tblBorrowedHistory.setBackground(new java.awt.Color(226, 200, 171));
+        tblBorrowedHistory.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        tblBorrowedHistory.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Transaction No.", "Borrower", "Book Title", "Author", "Date Borrowed", "Date Returned", "Status", "Librarian"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblBorrowedHistory.setRowHeight(30);
+        tblBorrowedHistory.setSelectionBackground(new java.awt.Color(247, 234, 212));
+        tblBorrowedHistory.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        jScrollPane3.setViewportView(tblBorrowedHistory);
+
+        pnlBorrowHistory.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 104, 1100, 440));
+
+        jLabel11.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("TRANSACTION HISTORY");
+        pnlBorrowHistory.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 50));
+
+        jLabel24.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel24.setText("Search Transaction:");
+        pnlBorrowHistory.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 190, 40));
+
+        txtSearchtbltransaction.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        txtSearchtbltransaction.setBorder(null);
+        txtSearchtbltransaction.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchtbltransactionKeyReleased(evt);
+            }
+        });
+        pnlBorrowHistory.add(txtSearchtbltransaction, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 60, 390, 30));
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search-field.png"))); // NOI18N
+        jLabel4.setText("jLabel2");
+        pnlBorrowHistory.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, 435, 45));
+
+        jPanel1.add(pnlBorrowHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
         pnlBookList.setBackground(new java.awt.Color(226, 200, 171));
         pnlBookList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -308,10 +445,10 @@ public class AdminPage extends javax.swing.JFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText(" Book Request");
-        jPanel4.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 320, 40));
+        lblTitle.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
+        lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle.setText(" Book Request");
+        jPanel4.add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 320, 40));
 
         txtBookTitle.setEditable(false);
         txtBookTitle.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -398,6 +535,26 @@ public class AdminPage extends javax.swing.JFrame {
         pnlDecline.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/decline-button.png"))); // NOI18N
         pnlDecline.setText("jLabel10");
         jPanel4.add(pnlDecline, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 155, 55));
+
+        btnReturn.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        btnReturn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnReturn.setText("Return");
+        btnReturn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReturn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnReturnMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnReturnMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnReturnMouseExited(evt);
+            }
+        });
+        jPanel4.add(btnReturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 360, 155, 55));
+
+        pnlReturn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/approve button.png"))); // NOI18N
+        jPanel4.add(pnlReturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 360, 155, 55));
 
         pnlBookRequests.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 340, 540));
 
@@ -494,45 +651,43 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel7.setText("jLabel2");
         pnlMembers.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 20, 435, 45));
 
-        jPanel1.add(pnlMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
-
-        pnlBorrowHistory.setBackground(new java.awt.Color(226, 200, 171));
-        pnlBorrowHistory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnlBorrowHistory.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jScrollPane3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        tblBorrowedHistory.setBackground(new java.awt.Color(226, 200, 171));
-        tblBorrowedHistory.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        tblBorrowedHistory.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Transaction No.", "Borrower", "Book Title", "Author", "Date Borrowed", "Date Returned", "Status"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        btnRegisterMember.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        btnRegisterMember.setForeground(new java.awt.Color(255, 255, 255));
+        btnRegisterMember.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnRegisterMember.setText("Register new member");
+        btnRegisterMember.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRegisterMember.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnRegisterMemberMouseClicked(evt);
             }
         });
-        tblBorrowedHistory.setRowHeight(30);
-        tblBorrowedHistory.setSelectionBackground(new java.awt.Color(247, 234, 212));
-        tblBorrowedHistory.setSelectionForeground(new java.awt.Color(0, 0, 0));
-        jScrollPane3.setViewportView(tblBorrowedHistory);
+        pnlMembers.add(btnRegisterMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(944, 32, 140, 30));
 
-        pnlBorrowHistory.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 94, 1100, 450));
+        pnlRegisterMember.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/register-button.png"))); // NOI18N
+        pnlMembers.add(pnlRegisterMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 30, 148, 38));
 
-        jLabel11.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("TRANSACTION HISTORY");
-        pnlBorrowHistory.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 1090, 60));
+        jPanel1.add(pnlMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
-        jPanel1.add(pnlBorrowHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
+        registerFrame.setVisible(true);
+        registerFrame.addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+                registerFrameInternalFrameClosed(evt);
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
+        registerFrame.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel1.add(registerFrame, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
 
         pnlRegisterBook.setBackground(new java.awt.Color(226, 200, 171));
         pnlRegisterBook.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -885,18 +1040,18 @@ public class AdminPage extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1360, 670));
 
+        getAccessibleContext().setAccessibleName("Admin");
+
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnApproveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnApproveMouseEntered
         pnlApprove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/hovered-approve button.png")));
-        //btnApprove.setForeground(Color.WHITE);
     }//GEN-LAST:event_btnApproveMouseEntered
 
     private void btnApproveMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnApproveMouseExited
         pnlApprove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/approve button.png")));
-        btnApprove.setForeground(Color.BLACK);
     }//GEN-LAST:event_btnApproveMouseExited
 
     private void lblLogoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLogoutMouseClicked
@@ -943,6 +1098,7 @@ public class AdminPage extends javax.swing.JFrame {
     private void lblBorrowHistoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBorrowHistoryMouseClicked
         hidePanels();
         pnlBorrowHistory.setVisible(true);
+        showSelectedPanel();
     }//GEN-LAST:event_lblBorrowHistoryMouseClicked
 
     private void lblBorrowHistoryMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBorrowHistoryMouseEntered
@@ -951,6 +1107,7 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void lblBorrowHistoryMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBorrowHistoryMouseExited
         pnlBorrowhistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        showSelectedPanel();
     }//GEN-LAST:event_lblBorrowHistoryMouseExited
 
     private void lblBookListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBookListMouseClicked
@@ -958,6 +1115,7 @@ public class AdminPage extends javax.swing.JFrame {
         jPanel1.add(pnlBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
         pnlBookList.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 1100, 470));
         pnlBookList.setVisible(true);
+        showSelectedPanel();
     }//GEN-LAST:event_lblBookListMouseClicked
 
     private void lblBookListMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBookListMouseEntered
@@ -966,11 +1124,13 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void lblBookListMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBookListMouseExited
         pnlBooklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        showSelectedPanel();
     }//GEN-LAST:event_lblBookListMouseExited
 
     private void lblBookRequestsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBookRequestsMouseClicked
         hidePanels();
         pnlBookRequests.setVisible(true);
+        showSelectedPanel();
     }//GEN-LAST:event_lblBookRequestsMouseClicked
 
     private void lblBookRequestsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBookRequestsMouseEntered
@@ -979,11 +1139,13 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void lblBookRequestsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBookRequestsMouseExited
         pnlBookrequests.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        showSelectedPanel();
     }//GEN-LAST:event_lblBookRequestsMouseExited
 
     private void pnlBorrowhistoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBorrowhistoryMouseClicked
         hidePanels();
         pnlBorrowHistory.setVisible(true);
+        showSelectedPanel();
     }//GEN-LAST:event_pnlBorrowhistoryMouseClicked
 
     private void pnlBorrowhistoryMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBorrowhistoryMouseEntered
@@ -992,6 +1154,7 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void pnlBorrowhistoryMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBorrowhistoryMouseExited
         pnlBorrowhistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        showSelectedPanel();
     }//GEN-LAST:event_pnlBorrowhistoryMouseExited
 
     private void pnlBooklistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBooklistMouseClicked
@@ -999,6 +1162,7 @@ public class AdminPage extends javax.swing.JFrame {
         jPanel1.add(pnlBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
         pnlBookList.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 1100, 470));
         pnlBookList.setVisible(true);
+        showSelectedPanel();
     }//GEN-LAST:event_pnlBooklistMouseClicked
 
     private void pnlBooklistMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBooklistMouseEntered
@@ -1007,11 +1171,13 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void pnlBooklistMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBooklistMouseExited
         pnlBooklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        showSelectedPanel();
     }//GEN-LAST:event_pnlBooklistMouseExited
 
     private void pnlBookrequestsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBookrequestsMouseClicked
         hidePanels();
         pnlBookRequests.setVisible(true);
+        showSelectedPanel();
     }//GEN-LAST:event_pnlBookrequestsMouseClicked
 
     private void pnlBookrequestsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBookrequestsMouseEntered
@@ -1020,6 +1186,7 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void pnlBookrequestsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBookrequestsMouseExited
         pnlBookrequests.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        showSelectedPanel();
     }//GEN-LAST:event_pnlBookrequestsMouseExited
 
     private void pnlRegisterbookMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlRegisterbookMouseClicked
@@ -1028,6 +1195,7 @@ public class AdminPage extends javax.swing.JFrame {
         jPanel1.add(pnlBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 100, 760, 560));
         pnlBookList.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 740, 460));
         pnlRegisterBook.setVisible(true);
+        showSelectedPanel();
     }//GEN-LAST:event_pnlRegisterbookMouseClicked
 
     private void pnlRegisterbookMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlRegisterbookMouseEntered
@@ -1036,6 +1204,7 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void pnlRegisterbookMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlRegisterbookMouseExited
         pnlRegisterbook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        showSelectedPanel();
     }//GEN-LAST:event_pnlRegisterbookMouseExited
 
     private void lblRegisterBookMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegisterBookMouseClicked
@@ -1044,6 +1213,7 @@ public class AdminPage extends javax.swing.JFrame {
         jPanel1.add(pnlBookList, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 100, 760, 560));
         pnlBookList.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 740, 460));
         pnlRegisterBook.setVisible(true);
+        showSelectedPanel();
     }//GEN-LAST:event_lblRegisterBookMouseClicked
 
     private void lblRegisterBookMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegisterBookMouseEntered
@@ -1052,11 +1222,13 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void lblRegisterBookMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegisterBookMouseExited
         pnlRegisterbook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        showSelectedPanel();
     }//GEN-LAST:event_lblRegisterBookMouseExited
 
     private void lblMembersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMembersMouseClicked
         hidePanels();
         pnlMembers.setVisible(true);
+        showSelectedPanel();
     }//GEN-LAST:event_lblMembersMouseClicked
 
     private void lblMembersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMembersMouseEntered
@@ -1065,11 +1237,13 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void lblMembersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMembersMouseExited
         pnlmembers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        showSelectedPanel();
     }//GEN-LAST:event_lblMembersMouseExited
 
     private void pnlmembersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlmembersMouseClicked
         hidePanels();
         pnlMembers.setVisible(true);
+        showSelectedPanel();
     }//GEN-LAST:event_pnlmembersMouseClicked
 
     private void pnlmembersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlmembersMouseEntered
@@ -1078,6 +1252,7 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void pnlmembersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlmembersMouseExited
         pnlmembers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
+        showSelectedPanel();
     }//GEN-LAST:event_pnlmembersMouseExited
 
     private void btnDeclineMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeclineMouseEntered
@@ -1135,8 +1310,7 @@ public class AdminPage extends javax.swing.JFrame {
         if(evt.getClickCount() == 2){
             int row = tblBookRequests.getSelectedRow();
             
-            if(tblBookRequests.getValueAt(row, 5).toString().equals("PENDING")){
-                transactionID = tblBookRequests.getValueAt(row, 0).toString();
+            transactionID = tblBookRequests.getValueAt(row, 0).toString();
                 String name = tblBookRequests.getValueAt(row, 1).toString();
                 String bookTitle = tblBookRequests.getValueAt(row, 2).toString();
                 String author = tblBookRequests.getValueAt(row, 3).toString();
@@ -1144,13 +1318,38 @@ public class AdminPage extends javax.swing.JFrame {
                 txtBorrower.setText(name);
                 txtBookTitle.setText(bookTitle);
                 txtAuthor.setText(author);
+                
+            if(tblBookRequests.getValueAt(row, 5).toString().equals("PENDING")){
+                lblTitle.setText("Book Request");
+                btnReturn.setVisible(false);
+                pnlReturn.setVisible(false);
+                btnDecline.setVisible(true);
+                pnlDecline.setVisible(true);
+                btnApprove.setVisible(true);
+                pnlApprove.setVisible(true);
+            }
+            else{
+                lblTitle.setText("Return Book");
+                btnReturn.setVisible(true);
+                pnlReturn.setVisible(true);
+                btnDecline.setVisible(false);
+                pnlDecline.setVisible(false);
+                btnApprove.setVisible(false);
+                pnlApprove.setVisible(false);
             }
         }
     }//GEN-LAST:event_tblBookRequestsMouseClicked
 
     private void btnApproveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnApproveMouseClicked
+        String borrower = txtBorrower.getText();
+        String bookTitle = txtBookTitle.getText();
+        String author = txtAuthor.getText();
         
-        queries.bookRequest("APPROVED", transactionID, date);
+        if(borrower.isEmpty() || bookTitle.isEmpty() || author.isEmpty()){
+            JOptionPane.showMessageDialog(null, "Please select a request", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        queries.bookRequest("APPROVED", transactionID, date, fname + " " + lname);
         JOptionPane.showMessageDialog(null, "Book request has been approved.", "Approved", JOptionPane.PLAIN_MESSAGE);
         showBooks();
         showBookTransactions();
@@ -1161,8 +1360,16 @@ public class AdminPage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnApproveMouseClicked
 
     private void btnDeclineMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeclineMouseClicked
+        String borrower = txtBorrower.getText();
+        String bookTitle = txtBookTitle.getText();
+        String author = txtAuthor.getText();
         
-        queries.bookRequest("DENIED", transactionID, date);
+        if(borrower.isEmpty() || bookTitle.isEmpty() || author.isEmpty()){
+            JOptionPane.showMessageDialog(null, "Please select a request", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        queries.bookRequest("DENIED", transactionID, date, fname + " " + lname);
         JOptionPane.showMessageDialog(null, "Book request has been denied.", "Denied", JOptionPane.PLAIN_MESSAGE);
         showBooks();
         showBookTransactions();
@@ -1174,31 +1381,32 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void lblPersonalinfoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPersonalinfoMouseClicked
         hidePanels();
-        pnlInfo = new PersonalInfoPanel(this, "PersonalInfo", id);
-        jPanel1.add(pnlInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
+        pnlInfo = new PersonalInfoPanel(registerFrame, "PersonalInfo", id);
+        registerFrame.getContentPane().add(pnlInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 560));
+        registerFrame.setVisible(true);
     }//GEN-LAST:event_lblPersonalinfoMouseClicked
 
     private void tblMembersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMembersMouseClicked
-        if(evt.getClickCount() == 2){
+        if (evt.getClickCount() == 2) {
             int row = tblMembers.getSelectedRow();
-            
+
             int id = Integer.parseInt(tblMembers.getValueAt(row, 0).toString());
             hidePanels();
-            pnlInfo = new PersonalInfoPanel(this, "Members", id);
-        jPanel1.add(pnlInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, 1120, 560));
+            pnlInfo = new PersonalInfoPanel(registerFrame, "Members", id);
+            registerFrame.getContentPane().add(pnlInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 560));
+            registerFrame.setVisible(true);
         }
     }//GEN-LAST:event_tblMembersMouseClicked
 
     private void txtSearchtblBookListKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchtblBookListKeyReleased
         String query = txtSearchtblBookList.getText();
-        
-        filterTable(tblBookList, query);
+        filterTable(tblBookList, query, "books", 0);
     }//GEN-LAST:event_txtSearchtblBookListKeyReleased
 
     private void txtsearchMemberKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsearchMemberKeyReleased
         String query = txtsearchMember.getText();
         
-        filterTable(tblMembers, query);
+        filterTable(tblMembers, query, "users", id);
     }//GEN-LAST:event_txtsearchMemberKeyReleased
 
     private void lblNotificationsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationsMouseClicked
@@ -1207,6 +1415,62 @@ public class AdminPage extends javax.swing.JFrame {
         }
         popNotif.visibility();
     }//GEN-LAST:event_lblNotificationsMouseClicked
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        int logout = JOptionPane.showConfirmDialog(null, "Do you want to logout?", "Logout", JOptionPane.OK_CANCEL_OPTION);
+
+        if(logout == 0){
+            new LogInForm().setVisible(true);
+            dispose();
+        }
+    }//GEN-LAST:event_formWindowClosing
+
+    private void btnReturnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReturnMouseClicked
+        String borrower = txtBorrower.getText();
+        String bookTitle = txtBookTitle.getText();
+        String author = txtAuthor.getText();
+        
+        if(borrower.isEmpty() || bookTitle.isEmpty() || author.isEmpty()){
+            JOptionPane.showMessageDialog(null, "Please select a book to return", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        queries.returnBook(date, transactionID);
+        JOptionPane.showMessageDialog(null, "Book has been returned.", "Book Returned", JOptionPane.PLAIN_MESSAGE);
+        showBooks();
+        showBookTransactions();
+        
+        txtBorrower.setText("");
+        txtBookTitle.setText("");
+        txtAuthor.setText("");
+    }//GEN-LAST:event_btnReturnMouseClicked
+
+    private void btnReturnMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReturnMouseEntered
+        pnlReturn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/hovered-approve button.png")));
+    }//GEN-LAST:event_btnReturnMouseEntered
+
+    private void btnReturnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReturnMouseExited
+        pnlReturn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/approve button.png")));
+    }//GEN-LAST:event_btnReturnMouseExited
+
+    private void btnRegisterMemberMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegisterMemberMouseClicked
+        hidePanels();
+        registerFrame.setVisible(true);
+        registerFrame.getContentPane().add(registerPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 560));
+        showSelectedPanel();
+    }//GEN-LAST:event_btnRegisterMemberMouseClicked
+
+    private void registerFrameInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_registerFrameInternalFrameClosed
+        hidePanels();
+        registerFrame.getContentPane().removeAll();
+        showMembers();
+        pnlMembers.setVisible(true);
+        showSelectedPanel();
+    }//GEN-LAST:event_registerFrameInternalFrameClosed
+
+    private void txtSearchtbltransactionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchtbltransactionKeyReleased
+        String query = txtSearchtbltransaction.getText();
+        filterTable(tblBorrowedHistory, query, "transactions", id);
+    }//GEN-LAST:event_txtSearchtbltransactionKeyReleased
 
     /**
      * @param args the command line arguments
@@ -1247,6 +1511,8 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JLabel btnApprove;
     private javax.swing.JLabel btnDecline;
     private javax.swing.JLabel btnRegisterBook;
+    private javax.swing.JLabel btnRegisterMember;
+    private javax.swing.JLabel btnReturn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1263,6 +1529,7 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1286,6 +1553,7 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JLabel lblNotifications;
     private javax.swing.JLabel lblPersonalinfo;
     private javax.swing.JLabel lblRegisterBook;
+    private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     private javax.swing.JLabel logo;
     private javax.swing.JLabel pnlApprove;
@@ -1303,8 +1571,11 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JLabel pnlPersonalInfo;
     private javax.swing.JLabel pnlRegBook;
     private javax.swing.JPanel pnlRegisterBook;
+    private javax.swing.JLabel pnlRegisterMember;
     private javax.swing.JLabel pnlRegisterbook;
+    private javax.swing.JLabel pnlReturn;
     private javax.swing.JLabel pnlmembers;
+    private javax.swing.JInternalFrame registerFrame;
     private javax.swing.JTable tblBookList;
     private javax.swing.JTable tblBookRequests;
     private javax.swing.JTable tblBorrowedHistory;
@@ -1317,6 +1588,7 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JTextField txtRegBookTitle;
     private javax.swing.JTextField txtRegCategory;
     private javax.swing.JTextField txtSearchtblBookList;
+    private javax.swing.JTextField txtSearchtbltransaction;
     private javax.swing.JTextField txtsearchMember;
     // End of variables declaration//GEN-END:variables
 }

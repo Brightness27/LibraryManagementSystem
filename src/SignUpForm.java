@@ -41,6 +41,7 @@ public class SignUpForm extends javax.swing.JFrame {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -48,7 +49,7 @@ public class SignUpForm extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        setSize(new java.awt.Dimension(1136, 599));
+        setSize(new java.awt.Dimension(1120, 560));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

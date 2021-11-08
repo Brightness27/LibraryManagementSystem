@@ -59,19 +59,20 @@ public class db {
                 + " `Availability` VARCHAR(30) NOT NULL DEFAULT 'Available' ,"
                 + " PRIMARY KEY (`BookID`)) ENGINE = InnoDB;";
 
-        String transactionSql = "CREATE TABLE IF NOT EXISTS `bookprocessing` (\n"
-                + "  `Transaction_No.` int(11) NOT NULL AUTO_INCREMENT,\n"
-                + "  `userid` int(11) NOT NULL,\n"
-                + "  `BookID` int(11) NOT NULL,\n"
-                + "  `Date_Borrowed` varchar(20) NOT NULL DEFAULT '--',\n"
-                + "  `Date_Returned` varchar(20) NOT NULL DEFAULT '--',\n"
-                + "  `Status` varchar(10) NOT NULL,\n"
-                + "  PRIMARY KEY (`Transaction_No.`),\n"
-                + "  KEY `BookID` (`BookID`) USING BTREE,\n"
-                + "  KEY `userid` (`userid`),\n"
-                + "  CONSTRAINT `bookprocessing_ibfk_1` FOREIGN KEY (`BookID`) REFERENCES `books` (`BookID`) ,\n"
-                + "  CONSTRAINT `bookprocessing_ibfk_2` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`)\n"
-                + ") ENGINE=InnoDB ";
+        String transactionSql = "CREATE TABLE IF NOT EXISTS `librarymanagementsystem`.`transactions` (\n"
+                + " `Transaction_No.` int(11) NOT NULL AUTO_INCREMENT,\n"
+                + " `userid` int(11) NOT NULL,\n"
+                + " `BookID` int(11) NOT NULL,\n"
+                + " `Date_Borrowed` varchar(20) NOT NULL DEFAULT '--',\n"
+                + " `Date_Returned` varchar(20) NOT NULL DEFAULT '--',\n"
+                + " `Status` varchar(10) NOT NULL,\n"
+                + " `Librarian` varchar(200) DEFAULT '--',\n"
+                + " PRIMARY KEY (`Transaction_No.`),\n"
+                + " KEY `BookID` (`BookID`) USING BTREE,\n"
+                + " KEY `userid` (`userid`),\n"
+                + " CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`BookID`) REFERENCES `books` (`BookID`),\n"
+                + " CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`)\n"
+                + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
 
         String notificationSql = "CREATE TABLE IF NOT EXISTS `notifications` (\n"
                 + "  `NotificationID` int NOT NULL AUTO_INCREMENT,\n"
