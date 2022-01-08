@@ -41,6 +41,7 @@ public class SignUpForm extends javax.swing.JFrame {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(1120, 560));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -54,7 +55,7 @@ public class SignUpForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        new LogInForm().setVisible(true);
+        new LogInForm("Logout").setVisible(true);
             dispose();
     }//GEN-LAST:event_formWindowClosing
     

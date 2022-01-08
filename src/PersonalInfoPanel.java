@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author user
@@ -20,15 +19,15 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
 
     SqlQueries lms = new SqlQueries();
     String type;
+    String cancel;
     int id;
     JFrame frame;
-    JInternalFrame frame2;
-    
+
     public PersonalInfoPanel() {
         initComponents();
     }
-    
-    public PersonalInfoPanel(JFrame frame, String callType, int id){
+
+    public PersonalInfoPanel(JFrame frame, String callType, int id) {
         initComponents();
         this.frame = frame;
         this.type = callType;
@@ -37,94 +36,84 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         yearModel();
         dayModel();
         showPanel();
-    }
-    
-    public PersonalInfoPanel(JInternalFrame frame, String callType, int id){
-        initComponents();
-        this.frame2 = frame;
-        this.type = callType;
-        this.id = id;
-        lblBdayAlert.setVisible(false);
-        yearModel();
-        dayModel();
-        showPanel();
+        cancel = "Are you sure you want to cancel " + (btnRegister.getText().equals("Register") ? "registration?" : "update?");
     }
 
-    private void showPanel(){
-        if(type.equals("PersonalInfo")){
+    private void showPanel() {
+        if (type.equals("PersonalInfo")) {
             lblPanelTitle.setText("PERSONAL INFORMATION");
             hideComponents();
             disableComponents();
             setFields();
-        }
-        else if(type.equals("Members")){
+        } else if (type.equals("Members")) {
             lblPanelTitle.setText("UPDATE USER");
             setFields();
             listUserType.setEnabled(true);
             hideExtraComponents();
             btnRegister.setText("Update");
-        }
-        else if(type.equals("Signup")){
+            btnExit.setVisible(true);
+            pnlExit.setVisible(true);
+        } else if (type.equals("Signup")) {
             bgUsertype.setVisible(false);
             txtUserType.setVisible(false);
-            
+
             bgSex.setVisible(false);
             txtSex.setVisible(false);
-            
+
             btnActivate.setVisible(false);
             pnlActivate.setVisible(false);
-            
+
             bgBday.setVisible(false);
             txtbday.setVisible(false);
-            if(id == -1){
+            if (id == -1) {
                 listUserType.setEnabled(true);
             }
         }
     }
-    
-    private void hideExtraComponents(){
-            bgConfirmPass.setVisible(false);
-            txtConfirmPassword.setVisible(false);
-            lblConfirmPass.setVisible(false);
-            btnExit.setVisible(false);
-            pnlExit.setVisible(false);
-            txtUserType.setVisible(false);
-            bgUsertype.setVisible(false);
-            bgSex.setVisible(false);
-            txtSex.setVisible(false);
-            bgBday.setVisible(false);
-            txtbday.setVisible(false);
-            
-            String num = txtContactNumber.getText().replace("+63", "");
-            txtContactNumber.setText(num);
+
+    private void hideExtraComponents() {
+        bgConfirmPass.setVisible(false);
+        txtConfirmPassword.setVisible(false);
+        lblConfirmPass.setVisible(false);
+        btnExit.setVisible(false);
+        pnlExit.setVisible(false);
+        txtUserType.setVisible(false);
+        bgUsertype.setVisible(false);
+        bgSex.setVisible(false);
+        txtSex.setVisible(false);
+        bgBday.setVisible(false);
+        txtbday.setVisible(false);
+
+        String num = txtContactNumber.getText().replace("+63", "");
+        txtContactNumber.setText(num);
     }
-    
-    private void hideComponents(){
-            jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 80, 30));
-            jPanel2.add(txtContactNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 220, 170, 30));
-            jPanel2.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, 200, 50));
-            listUserType.setVisible(false);
-            cmbSex.setVisible(false);
-            cmbYear.setVisible(false);
-            cmbMonth.setVisible(false);
-            cmbDay.setVisible(false);
-            btnExit.setVisible(false);
-            pnlExit.setVisible(false);
-            btnRegister.setVisible(false);
-            pnlRegister.setVisible(false);
-            lblnum.setVisible(false);
-            lblYear.setVisible(false);
-            lblMonth.setVisible(false);
-            lblDay.setVisible(false);
-            bgConfirmPass.setVisible(false);
-            txtConfirmPassword.setVisible(false);
-            lblConfirmPass.setVisible(false);
-            btnActivate.setVisible(false);
-            pnlActivate.setVisible(false);
-            
+
+    private void hideComponents() {
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 80, 30));
+        jPanel2.add(txtContactNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 220, 170, 30));
+        jPanel2.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, 200, 50));
+        listUserType.setVisible(false);
+        cmbSex.setVisible(false);
+        cmbYear.setVisible(false);
+        cmbMonth.setVisible(false);
+        cmbDay.setVisible(false);
+        btnExit.setVisible(false);
+        pnlExit.setVisible(false);
+        btnRegister.setVisible(false);
+        pnlRegister.setVisible(false);
+        lblnum.setVisible(false);
+        lblYear.setVisible(false);
+        lblMonth.setVisible(false);
+        lblDay.setVisible(false);
+        bgConfirmPass.setVisible(false);
+        txtConfirmPassword.setVisible(false);
+        lblConfirmPass.setVisible(false);
+        btnActivate.setVisible(false);
+        pnlActivate.setVisible(false);
+
     }
-    
-    private void disableComponents(){
+
+    private void disableComponents() {
         txtUserType.setEditable(false);
         txtFirstName.setEditable(false);
         txtMiddleName.setEditable(false);
@@ -137,15 +126,15 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         txtbday.setEditable(false);
         txtAddress.setEditable(false);
     }
-    
-    private void setFields(){
+
+    private void setFields() {
         String user[] = lms.getUser(id);
         txtUserType.setText(user[0]);
-        
+
         txtFirstName.setText(user[1]);
-        if(user[2].equals("N/A")){
+        if (user[2].equals("N/A")) {
             txtMiddleName.setText("");
-        }else{
+        } else {
             txtMiddleName.setText(user[2]);
         }
         txtLastName.setText(user[3]);
@@ -158,21 +147,20 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         txtbday.setText(user[10]);
         listUserType.setSelectedItem(user[0]);
         cmbSex.setSelectedItem(user[8]);
-        
+
         String bday[] = user[10].split("-", 3);
-        
+
         cmbYear.setSelectedItem(bday[0]);
         cmbMonth.setSelectedItem(bday[1]);
         cmbDay.setSelectedItem(bday[2]);
         computeAge(Integer.parseInt(bday[1]), Integer.parseInt(bday[2]), Integer.parseInt(bday[0]));
-        if(user[11].equals("ACTIVATED")){
+        if (user[11].equals("ACTIVATED")) {
             btnActivate.setText("Deactivate");
-        }else{
+        } else {
             btnActivate.setText("Activate");
         }
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
@@ -239,6 +227,8 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         lblPanelTitle = new javax.swing.JLabel();
 
+        setMinimumSize(new java.awt.Dimension(1120, 560));
+        setPreferredSize(new java.awt.Dimension(1120, 560));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBackground(new java.awt.Color(226, 200, 171));
@@ -563,7 +553,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         pnlActivate.setText("jLabel17");
         jPanel2.add(pnlActivate, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 30, 110, 50));
 
-        add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1120, 450));
+        add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1120, 480));
 
         jPanel3.setBackground(new java.awt.Color(138, 102, 63));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -607,7 +597,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
 
     private void txtContactNumberKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContactNumberKeyTyped
         char c = evt.getKeyChar();
-        if((!txtContactNumber.getText().isEmpty() && txtContactNumber.getText().length() == 10) || !Character.isDigit(c)){
+        if ((!txtContactNumber.getText().isEmpty() && txtContactNumber.getText().length() == 10) || !Character.isDigit(c)) {
             evt.consume();
             return;
         }
@@ -631,31 +621,31 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         String bday = cmbYear.getSelectedItem().toString() + "-" + cmbMonth.getSelectedItem().toString() + "-" + cmbDay.getSelectedItem().toString();
         String address = txtAddress.getText();
 
-        if(fname.isEmpty()){
+        if (fname.isEmpty()) {
             emptyFields++;
         }
-        if(mname.isEmpty()){
+        if (mname.isEmpty()) {
             mname = "N/A";
         }
-        if(lname.isEmpty()){
+        if (lname.isEmpty()) {
             emptyFields++;
         }
-        if(eaddress.isEmpty()){
+        if (eaddress.isEmpty()) {
             emptyFields++;
         }
-        if(phoneNumber.equals("+63")){
+        if (phoneNumber.equals("+63")) {
             emptyFields++;
         }
-        if(username.isEmpty()){
+        if (username.isEmpty()) {
             emptyFields++;
         }
-        if(password.isEmpty()){
+        if (password.isEmpty()) {
             emptyFields++;
         }
-        if(confirmPassword.isEmpty()){
+        if (confirmPassword.isEmpty()) {
             emptyFields++;
         }
-        if(address.isEmpty()){
+        if (address.isEmpty()) {
             emptyFields++;
         }
 
@@ -696,10 +686,10 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
             if (successFailed == 0) {
                 JOptionPane.showMessageDialog(null, "Register Succesful.", "Register", JOptionPane.PLAIN_MESSAGE);
                 if (id == 0) {
-                    new LogInForm().setVisible(true);
+                    new LogInForm("Logout").setVisible(true);
                     frame.dispose();
-                } else if (id == -1) {
-                    frame2.dispose();
+                } else {
+                    this.setVisible(false);
                 }
             } else if (successFailed == 2) {
                 JOptionPane.showMessageDialog(null, "Unable to register.", "error", JOptionPane.ERROR_MESSAGE);
@@ -712,7 +702,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
                 txtPassword.setText("");
                 txtConfirmPassword.setText("");
             }
-        }else{
+        } else {
             if (emptyFields != 0) {
                 JOptionPane.showMessageDialog(null, "please fill up all neccessary fields", "error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -743,14 +733,14 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
             register[8] = sex;
             register[9] = bday;
             register[10] = address;
-            
+
             int successFailed = lms.updateUser(register, id);
 
             if (successFailed == 0) {
                 JOptionPane.showMessageDialog(null, "Update Succesful.", "Update", JOptionPane.PLAIN_MESSAGE);
-                
-                    frame2.dispose();
-                
+
+                this.setVisible(false);
+
             } else if (successFailed == 2) {
                 JOptionPane.showMessageDialog(null, "Unable to Update.", "error", JOptionPane.ERROR_MESSAGE);
                 txtUsername.setText("");
@@ -766,29 +756,34 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRegisterMouseClicked
 
     private void btnExitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExitMouseClicked
-        if (id == 0) {
-            int ask = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel registration?", "Cancel", JOptionPane.OK_CANCEL_OPTION);
-            if (ask == 0) {
-                new LogInForm().setVisible(true);
+        int ask = JOptionPane.showConfirmDialog(null, cancel, "Cancel", JOptionPane.OK_CANCEL_OPTION);
+        if (ask == 0) {
+
+            if (id == 0) {
+                new LogInForm("Logout").setVisible(true);
                 frame.dispose();
+            } else {
+                this.setVisible(false);
+
             }
-        }else if(id == -1){
-            frame2.dispose();
         }
-        
+
+
     }//GEN-LAST:event_btnExitMouseClicked
 
     private void cmbYearItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbYearItemStateChanged
         dayModel();
-        if(lblBdayAlert.isVisible())
+        if (lblBdayAlert.isVisible()) {
             lblBdayAlert.setVisible(false);
+        }
         computeAge(Integer.parseInt(cmbMonth.getSelectedItem().toString()), Integer.parseInt(cmbDay.getSelectedItem().toString()), Integer.parseInt(cmbYear.getSelectedItem().toString()));
     }//GEN-LAST:event_cmbYearItemStateChanged
 
     private void cmbMonthItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbMonthItemStateChanged
         dayModel();
-        if(lblBdayAlert.isVisible())
+        if (lblBdayAlert.isVisible()) {
             lblBdayAlert.setVisible(false);
+        }
         computeAge(Integer.parseInt(cmbMonth.getSelectedItem().toString()), Integer.parseInt(cmbDay.getSelectedItem().toString()), Integer.parseInt(cmbYear.getSelectedItem().toString()));
     }//GEN-LAST:event_cmbMonthItemStateChanged
 
@@ -822,7 +817,7 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
             int changeStatus = lms.changeStatusMember(id, status);
             if (changeStatus == 0) {
                 JOptionPane.showMessageDialog(null, "Status changed", "Success", JOptionPane.PLAIN_MESSAGE);
-                frame2.dispose();
+                this.setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(null, "Status failed to change", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -830,7 +825,8 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnActivateMouseClicked
 
     Calendar cal;
-    private void dayModel(){
+
+    private void dayModel() {
         cal = Calendar.getInstance();
         int year = Integer.parseInt(cmbYear.getSelectedItem().toString());
         int month = Integer.parseInt(cmbMonth.getSelectedItem().toString());
@@ -838,36 +834,37 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         cal.set(Calendar.MONTH, (month - 1));
         cal.set(Calendar.DAY_OF_MONTH, 1);
         int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-        
+
         String model[] = new String[maxDay];
-        for(int i = 0; i < model.length; i++){
+        for (int i = 0; i < model.length; i++) {
             String m = (i + 1) + "";
-            if(m.length() == 1) {
+            if (m.length() == 1) {
                 m = "0" + m;
             }
             model[i] = m;
         }
-        cmbDay.setModel(new javax.swing.DefaultComboBoxModel<>(model) );
+        cmbDay.setModel(new javax.swing.DefaultComboBoxModel<>(model));
     }
-    private void yearModel(){
+
+    private void yearModel() {
         String model[] = new String[51];
         cal = new GregorianCalendar();
         int year = cal.get(Calendar.YEAR);
-        
-        for(int i = 0; i < model.length; i++){
+
+        for (int i = 0; i < model.length; i++) {
             model[i] = (year - i) + "";
         }
         cmbYear.setModel(new javax.swing.DefaultComboBoxModel<>(model));
     }
-    
-    private void computeAge(int month_bday, int day_bday, int year_bday){
+
+    private void computeAge(int month_bday, int day_bday, int year_bday) {
         cal = new GregorianCalendar();
         int computeDifference = 0;
-        
+
         int month = cal.get(Calendar.MONTH);
         int year = cal.get(Calendar.YEAR);
         int day = cal.get(Calendar.DAY_OF_MONTH);
-        
+
         if (month_bday < month) {
             computeDifference = year - year_bday;
         } else if (month_bday == month) {
@@ -879,10 +876,10 @@ public class PersonalInfoPanel extends javax.swing.JPanel {
         } else {
             computeDifference = (year - 1) - year_bday;
         }
-        
-        if(computeDifference < 18){
+
+        if (computeDifference < 18) {
             lblBdayAlert.setVisible(true);
-        }else{
+        } else {
             lblBdayAlert.setVisible(false);
         }
         txtAge.setText(computeDifference + "");

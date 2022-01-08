@@ -269,10 +269,6 @@ public class PopupPanel extends javax.swing.JFrame {
         lblTitle = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         lblMore = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        pangalan = new javax.swing.JLabel();
-        mensahe = new javax.swing.JLabel();
-        panahon = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -305,21 +301,7 @@ public class PopupPanel extends javax.swing.JFrame {
 
         getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 0, 346, 456));
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        pangalan.setText("jLabel1");
-        jPanel4.add(pangalan, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 320, 20));
-
-        mensahe.setText("jLabel1");
-        jPanel4.add(mensahe, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 250, 20));
-
-        panahon.setText("jLabel1");
-        jPanel4.add(panahon, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 20, 70, 20));
-
-        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 90, 320, 40));
-
-        setBounds(0, 0, 725, 456);
+        setBounds(0, 0, 352, 456);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -361,11 +343,7 @@ public class PopupPanel extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JLabel lblMore;
     private javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel mensahe;
-    private javax.swing.JLabel panahon;
-    private javax.swing.JLabel pangalan;
     // End of variables declaration//GEN-END:variables
 }

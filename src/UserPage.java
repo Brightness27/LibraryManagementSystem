@@ -16,7 +16,6 @@ import javax.swing.table.TableRowSorter;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author user
@@ -31,12 +30,13 @@ public class UserPage extends javax.swing.JFrame {
     String transactID;
     PopupPanel popNotif;
     PopupPanel popMessage;
-    PersonalInfoPanel pnlInfo;    
+    PersonalInfoPanel pnlInfo;
     SqlQueries queries = new SqlQueries();
+
     public UserPage() {
         initComponents();
     }
-    
+
     UserPage(int id, String fname, String lname) {
         this.fname = fname;
         this.lname = lname;
@@ -54,82 +54,81 @@ public class UserPage extends javax.swing.JFrame {
         setCurrentDate();
         showSelectedPanel();
     }
-    
+
     public void changeIcon() {
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("Resources/Frame-Logo.png")));
         pnlBookList.setVisible(true);
         lblWelcome.setText("Welcome, " + fname);
     }
-    
-    private void hidePanels(){
+
+    private void hidePanels() {
         pnlBookList.setVisible(false);
         pnlBorrowBooks.setVisible(false);
         pnlBorrowHistory.setVisible(false);
         pnlMessage.setVisible(false);
         pnlInfo.setVisible(false);
-        
+
         txtBookID.setText("");
         txtBookTitle.setText("");
         txtAuthor.setText("");
         txtSearchtblBookList.setText("");
-        
+
         showBooks();
     }
-    
-    private void showSelectedPanel(){
+
+    private void showSelectedPanel() {
         pnlBooklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
         pnlBorrowbooks.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
         pnlBorrowhistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/user-admin-panel.png")));
-        
-        
+
         lblBookList.setForeground(Color.BLACK);
         lblBorrowHistory.setForeground(Color.BLACK);
         lblBorrowBooks.setForeground(Color.BLACK);
-        
-        if(pnlBookList.isVisible()){
+
+        if (pnlBookList.isVisible()) {
             pnlBooklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/selected-user-admin-panel.png")));
             lblBookList.setForeground(Color.WHITE);
         }
-        if(pnlBorrowHistory.isVisible()){
+        if (pnlBorrowHistory.isVisible()) {
             pnlBorrowhistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/selected-user-admin-panel.png")));
             lblBorrowHistory.setForeground(Color.WHITE);
         }
-        if(pnlBorrowBooks.isVisible()){
+        if (pnlBorrowBooks.isVisible()) {
             pnlBorrowbooks.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/selected-user-admin-panel.png")));
             lblBorrowBooks.setForeground(Color.WHITE);
         }
-        
+
     }
-    
-    private void showBooks(){
+
+    private void showBooks() {
         String books[][] = queries.showBooks();
         DefaultTableModel model = (DefaultTableModel) tblBookList.getModel();
         model.setRowCount(0);
-        
-        for (int i = 0; i < books.length; i++){
+
+        for (int i = 0; i < books.length; i++) {
             model.addRow(books[i]);
         }
     }
-    
-    private void showBorrowedBooks(){
+
+    private void showBorrowedBooks() {
         String books[][] = queries.showBookTransactions(id);
         DefaultTableModel requestBooksModel = (DefaultTableModel) tblBorrowedBooks.getModel();
         DefaultTableModel borrowedHistoryModel = (DefaultTableModel) tblBorrowedHistory.getModel();
         requestBooksModel.setRowCount(0);
         borrowedHistoryModel.setRowCount(0);
-        for (int i = 0; i < books.length; i++){
-            
-            if(books[i][5].equals("RETURNED") || books[i][5].equals("CANCELLED") || books[i][5].equals("DENIED")){
-                 String borroHistoryRow[] = {books[i][0], books[i][1], books[i][2], books[i][3], books[i][4], books[i][5], books[i][6]};
-                 borrowedHistoryModel.addRow(borroHistoryRow);
-            }else{
+        for (int i = 0; i < books.length; i++) {
+
+            if (books[i][5].equals("RETURNED") || books[i][5].equals("CANCELLED") || books[i][5].equals("DENIED")) {
+                String borroHistoryRow[] = {books[i][0], books[i][1], books[i][2], books[i][3], books[i][4], books[i][5], books[i][6]};
+                borrowedHistoryModel.addRow(borroHistoryRow);
+            } else {
                 String requestBookRow[] = {books[i][0], books[i][1], books[i][2], books[i][3], books[i][5], books[i][6]};
                 requestBooksModel.addRow(requestBookRow);
             }
         }
     }
-    
-    public void filterTable(String query){
+
+    public void filterTable(String query) {
         String books[][] = queries.filterTables("books", query, 0);
         DefaultTableModel model = (DefaultTableModel) tblBookList.getModel();
         model.setRowCount(0);
@@ -138,23 +137,23 @@ public class UserPage extends javax.swing.JFrame {
             model.addRow(books[i]);
         }
     }
-    
-    private void setCurrentDate(){
+
+    private void setCurrentDate() {
         cal = new GregorianCalendar();
-        String year = cal.get(Calendar.YEAR)+ "";
+        String year = cal.get(Calendar.YEAR) + "";
         String month = (cal.get(Calendar.MONTH) + 1) + "";
         String day = cal.get(Calendar.DAY_OF_MONTH) + "";
         date = year + "-" + month + "-" + day;
     }
-    
-    private void setTableColumnSize(){
+
+    private void setTableColumnSize() {
         TableColumnModel cmTblBookList = tblBookList.getColumnModel();
         cmTblBookList.getColumn(0).setPreferredWidth(10);
         cmTblBookList.getColumn(1).setPreferredWidth(100);
         cmTblBookList.getColumn(2).setPreferredWidth(242);
         cmTblBookList.getColumn(3).setPreferredWidth(50);
         cmTblBookList.getColumn(4).setPreferredWidth(50);
-        
+
         TableColumnModel cmTblBookRequest = tblBorrowedBooks.getColumnModel();
         cmTblBookRequest.getColumn(0).setPreferredWidth(50);
         cmTblBookRequest.getColumn(1).setPreferredWidth(207);
@@ -162,7 +161,7 @@ public class UserPage extends javax.swing.JFrame {
         cmTblBookRequest.getColumn(3).setPreferredWidth(40);
         cmTblBookRequest.getColumn(4).setPreferredWidth(40);
         cmTblBookRequest.getColumn(5).setPreferredWidth(40);
-        
+
         TableColumnModel cmTblBorrowedHistory = tblBorrowedHistory.getColumnModel();
         cmTblBorrowedHistory.getColumn(0).setPreferredWidth(100);
         cmTblBorrowedHistory.getColumn(1).setPreferredWidth(300);
@@ -171,7 +170,7 @@ public class UserPage extends javax.swing.JFrame {
         cmTblBorrowedHistory.getColumn(4).setPreferredWidth(100);
         cmTblBorrowedHistory.getColumn(5).setPreferredWidth(100);
         cmTblBorrowedHistory.getColumn(6).setPreferredWidth(200);
-        
+
     }
 
     /**
@@ -728,11 +727,11 @@ public class UserPage extends javax.swing.JFrame {
     }//GEN-LAST:event_lblPersonalinfoMouseExited
 
     private void lblMessagesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMessagesMouseExited
-       pnlMessages.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/panel-icons.png")));
+        pnlMessages.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/panel-icons.png")));
     }//GEN-LAST:event_lblMessagesMouseExited
 
     private void lblNotifiactionsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotifiactionsMouseExited
-         pnlNotification.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/panel-icons.png")));
+        pnlNotification.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/panel-icons.png")));
     }//GEN-LAST:event_lblNotifiactionsMouseExited
 
     private void lblLogoutMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLogoutMouseExited
@@ -741,9 +740,9 @@ public class UserPage extends javax.swing.JFrame {
 
     private void lblLogoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLogoutMouseClicked
         int logout = JOptionPane.showConfirmDialog(null, "Do you want to logout?", "Logout", JOptionPane.OK_CANCEL_OPTION);
-        
-        if(logout == 0){
-            new LogInForm().setVisible(true);
+
+        if (logout == 0) {
+            new LogInForm("Logout").setVisible(true);
             dispose();
         }
     }//GEN-LAST:event_lblLogoutMouseClicked
@@ -804,13 +803,13 @@ public class UserPage extends javax.swing.JFrame {
     }//GEN-LAST:event_lblBorrowBooksMouseExited
 
     private void lblBorrowHistoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBorrowHistoryMouseClicked
-         hidePanels();
+        hidePanels();
         pnlBorrowHistory.setVisible(true);
         showSelectedPanel();
     }//GEN-LAST:event_lblBorrowHistoryMouseClicked
 
     private void pnlBorrowhistoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBorrowhistoryMouseClicked
-         hidePanels();
+        hidePanels();
         pnlBorrowHistory.setVisible(true);
         showSelectedPanel();
     }//GEN-LAST:event_pnlBorrowhistoryMouseClicked
@@ -861,7 +860,6 @@ public class UserPage extends javax.swing.JFrame {
 
         String command = btnBorrowBook.getText();
 
-        
         if (command.equals("Borrow Book")) {
             if (bookID.isEmpty() || bookTitle.isEmpty() || Author.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please select a book to borrow.", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -878,55 +876,63 @@ public class UserPage extends javax.swing.JFrame {
                 queries.requestBook(bookID, id);
 
             }
-        }
-        else if(command.equals("Cancel")){
-            if(bookID.isEmpty() || bookTitle.isEmpty() || Author.isEmpty()){
-            JOptionPane.showMessageDialog(null, "Please select a request to cancel.", "ERROR", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        } else if (command.equals("Cancel Request")) {
+            if (bookID.isEmpty() || bookTitle.isEmpty() || Author.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please select a request to cancel.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             transactID = queries.getTransactID(bookID, id, "PENDING");
             queries.cancelRequest(transactID);
             JOptionPane.showMessageDialog(null, "Request has been cancelled.", "Request Cancelled", JOptionPane.PLAIN_MESSAGE);
-            
+
         }
 
         txtBookID.setText("");
         txtBookTitle.setText("");
         txtAuthor.setText("");
-        
+
         showBorrowedBooks();
         showBooks();
-        
+
     }//GEN-LAST:event_btnBorrowBookMouseClicked
 
     private void tblBookListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBookListMouseClicked
-        if(evt.getClickCount() == 2){
+        if (evt.getClickCount() == 2) {
             int row = tblBookList.getSelectedRow();
             String book[] = new String[3];
-            
+
             book[0] = tblBookList.getValueAt(row, 0).toString();
             book[1] = tblBookList.getValueAt(row, 2).toString();
             book[2] = tblBookList.getValueAt(row, 3).toString();
-            
+
             hidePanels();
             pnlBorrowBooks.setVisible(true);
-            
+
             txtBookID.setText(book[0]);
             txtBookTitle.setText(book[1]);
             txtAuthor.setText(book[2]);
-            
+
             btnBorrowBook.setText("Borrow Book");
             lblTitleRequest.setText("Request Book");
             lblAuthor.setText("Author");
-            
+
             showSelectedPanel();
-            
+
         }
     }//GEN-LAST:event_tblBookListMouseClicked
 
     private void tblBorrowedBooksMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBorrowedBooksMouseClicked
         if (evt.getClickCount() == 2) {
             int row = tblBorrowedBooks.getSelectedRow();
+
+            if (tblBorrowedBooks.getValueAt(row, 4).toString().equals("BORROWED")) {
+                JOptionPane.showMessageDialog(null, "Book is already Borrowed and cannot be cancelled", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
+                lblTitleRequest.setText("Cancel Request");
+                btnBorrowBook.setText("Cancel Request");
+                lblAuthor.setText("Date Borrowed");
+            }
 
             String book[] = new String[3];
 
@@ -940,14 +946,6 @@ public class UserPage extends javax.swing.JFrame {
             txtBookTitle.setText(book[1]);
             txtAuthor.setText(book[2]);
 
-            if (tblBorrowedBooks.getValueAt(row, 4).toString().equals("BORROWED")) {
-                 JOptionPane.showMessageDialog(null, "Book is already Borrowed and cannot be cancelled", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                lblTitleRequest.setText("Cancel Request");
-                btnBorrowBook.setText("Cancel");
-                lblAuthor.setText("Date Borrowed");
-            }
-
         }
     }//GEN-LAST:event_tblBorrowedBooksMouseClicked
 
@@ -957,21 +955,21 @@ public class UserPage extends javax.swing.JFrame {
     }//GEN-LAST:event_lblMessagesMouseClicked
 
     private void lblNotifiactionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotifiactionsMouseClicked
-        if(popMessage.isVisible()){
+        if (popMessage.isVisible()) {
             popMessage.setVisible(false);
         }
         popNotif.visibility();
     }//GEN-LAST:event_lblNotifiactionsMouseClicked
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
-        
+
     }//GEN-LAST:event_btnSendActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         int logout = JOptionPane.showConfirmDialog(null, "Do you want to logout?", "Logout", JOptionPane.OK_CANCEL_OPTION);
 
-        if(logout == 0){
-            new LogInForm().setVisible(true);
+        if (logout == 0) {
+            new LogInForm("Logout").setVisible(true);
             dispose();
         }
     }//GEN-LAST:event_formWindowClosing
@@ -980,8 +978,7 @@ public class UserPage extends javax.swing.JFrame {
         hidePanels();
         pnlInfo.setVisible(true);
     }//GEN-LAST:event_lblPersonalinfoMouseClicked
-       
-        
+
     /**
      * @param args the command line arguments
      */
